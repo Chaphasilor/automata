@@ -2,72 +2,89 @@ var regeln = [];
 
 var zustand = 0;
 
-// var keller = document.getElementById('keller');
-var band = document.getElementById('band');
+var status = 0;
 
 function neueRegel() {
 
-    var temp = [document.getElementById('zustand').value,document.getElementById('eingabe').value,document.getElementById('top').value,document.getElementById('zustand_neu').value,document.getElementById('funktion').value,document.getElementById('push').value];
+    if (status == 0) {
 
-    console.log(temp);
+        var temp = [document.getElementById('zustand').value,document.getElementById('eingabe').value,document.getElementById('top').value,document.getElementById('zustand_neu').value,document.getElementById('funktion').value,document.getElementById('push').value];
 
-    regeln.push(temp);
+        console.log(temp);
 
-    // console.log("Regeln: " + regeln[1]);
+        regeln.push(temp);
+
+        // console.log("Regeln: " + regeln[1]);
+
+        document.getElementById('regeln').innerHTML += "<li>"+temp[0]+", "+temp[1]+", "+temp[2]+" --> "+temp[3]+", "+temp[4]+"("+temp[5]+")";
+
+    }
 
 }
 
-document.addEventListener("keydown", function() {eingabeVerarbeiten(event);});
+document.addEventListener("keypress", function() {eingabeVerarbeiten(event);});
 
 function eingabeVerarbeiten(event) {
 
-    var key = String.fromCharCode(event.keyCode).toLowerCase();
+    if (status == 1) {
 
-    for (var i = 0; i < regeln.length; i++) {
+        var key = String.fromCharCode(event.keyCode).toLowerCase();
 
-        if (regeln[i][1] == key) {
+        var n = 0;
+        var m = regeln.length;
+        var executed = false;
 
-            // console.log('almost almost nice');
+        while (!executed && n<m) {
 
-            if (regeln[i][0] == zustand) {
+            if (regeln[n][1] == key) {
 
-                // console.log('almost nice');
+                // console.log('almost almost nice');
 
-                if (regeln[i][2] == keller.getElementsByTagName('div')[0].getElementsByTagName('div')[0].innerHTML) {
+                if (regeln[n][0] == zustand) {
 
-                    // console.log('nice');
+                    // console.log('almost nice');
 
-                    switch (regeln[i][4]) {
-                        case "push":
+                    if (regeln[n][2] == keller.getElementsByTagName('div')[0].getElementsByTagName('div')[0].innerHTML) {
 
-                            var element = document.createElement("div");
-                            element.className = "element";
-                            var center = document.createElement("div");
-                            var text = document.createTextNode(regeln[i][5]);
-                            center.appendChild(text);
-                            element.appendChild(center);
+                        // console.log('nice');
 
-                            keller.insertBefore(element, keller.getElementsByTagName('div')[0]);
+                        switch (regeln[n][4]) {
+                            case "push":
 
-                            break;
-                        case "pop":
+                                var element = document.createElement("div");
+                                element.className = "element";
+                                var center = document.createElement("div");
+                                var text = document.createTextNode(regeln[n][5]);
+                                center.appendChild(text);
+                                element.appendChild(center);
 
-                            keller.getElementsByTagName('div')[0].remove();
+                                keller.insertBefore(element, keller.getElementsByTagName('div')[0]);
 
-                            break;
-                        case "nop":
+                                break;
+                            case "pop":
 
-                            break;
-                        default:
-                            alert('Ein Fehler ist aufgetreten!');
+                                keller.getElementsByTagName('div')[0].remove();
+
+                                break;
+                            case "nop":
+
+                                break;
+                            default:
+                                alert('Ein Fehler ist aufgetreten!');
+
+                        }
+
+                        zustand = regeln[n][3];
+
+                        executed = true;
 
                     }
-
-                    zustand = regeln[i][3];
 
                 }
 
             }
+
+            n++;
 
         }
 
@@ -76,8 +93,44 @@ function eingabeVerarbeiten(event) {
 }
 
 
-function save() {
+function speichern() {
 
+    localStorage.setItem('regeln', JSON.stringify(regeln));
 
+    console.log(localStorage.getItem('regeln'));
+
+    alert('Erfolgreich gespeichert!');
+
+}
+
+function laden() {
+
+    regeln = JSON.parse(localStorage.getItem('regeln'));
+
+    for (var i = 0; i < regeln.length; i++) {
+
+        document.getElementById('regeln').innerHTML += "<li>"+regeln[i][0]+", "+regeln[i][1]+", "+regeln[i][2]+" --> "+regeln[i][3]+", "+regeln[i][4]+"("+regeln[i][5]+")";
+
+    }
+
+    alert('Regeln wurden geladen!');
+
+}
+
+function statusWechseln(x) {
+
+    if (status == 1) {
+
+        x.style.backgroundColor = "red";
+
+    } else if (status == 0)  {
+
+        x.style.backgroundColor = "green";
+
+    }
+
+    status ^= true
+
+    console.log(status);
 
 }

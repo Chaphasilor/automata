@@ -78,10 +78,34 @@ html,body {
 /*----------Input----------*/
 
 #input {
-    width: 70%;
-    height: 60%;
     position: absolute;
     top: 25%;
     left: 10%;
-    border: 3px solid red;
+    width: 70%;
+    height: 10%;
+}
+
+#regeln {
+    position: absolute;
+    top: 40%;
+    left: 10%;
+    width: 50%;
+}
+
+#speichern {
+    position: absolute;
+    bottom: 5%;
+    left: 1%;
+}
+
+#laden {
+    position: absolute;
+    bottom: 5%;
+    left: 7%;
+}
+
+#status {
+    position: absolute;
+    bottom: 5%;
+    right: 15%;
 }
