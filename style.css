@@ -7,25 +7,34 @@ html,body {
   padding: 0;
 }
 
+/*--------KELLER---------*/
+
 #keller {
   position: absolute;
-  top: 40%;
-  left: 60%;
+  bottom: 1%;
+  right: 5%;
   border: 4px solid grey;
+  border-top: 0;
   border-bottom: 0;
   width: 100px;
-  height: 300px;
+  height: 500px;
 }
 
-.kellerelement {
+@keyframes appear {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+#keller .element {
   float: right;
   width: 80px;
   height: 80px;
   margin: 6px;
   border: 3px solid red;
+  animation: appear 2s ease-out;
 }
 
-.kellerelement div {
+#keller .element div {
   font-size: 30px;
   font-weight: bold;
   position: relative;
@@ -34,4 +43,45 @@ html,body {
   text-align: center;
   width: 100%;
   height: 1em;
+}
+
+/*---------BAND---------*/
+
+#band {
+  position: absolute;
+  top: 1%;
+  left: 1%;
+  border: 4px solid grey;
+  width: 98%;
+  height: 100px;
+}
+
+#band .element {
+  float: left;
+  width: 80px;
+  height: 80px;
+  margin: 6px;
+  border: 3px solid red;
+}
+
+#band .element div {
+  font-size: 30px;
+  font-weight: bold;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  width: 100%;
+  height: 1em;
+}
+
+/*----------Input----------*/
+
+#input {
+    width: 70%;
+    height: 60%;
+    position: absolute;
+    top: 25%;
+    left: 10%;
+    border: 3px solid red;
 }
