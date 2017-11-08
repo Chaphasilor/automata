@@ -188,6 +188,18 @@ html,body {
     left: 11.5%;
 }
 
+#bandEingabe {
+    position: absolute;
+    bottom: 5%;
+    left: 18.5%;
+}
+
+#starten {
+    position: absolute;
+    bottom: 5%;
+    left: 30%;
+}
+
 #status {
     position: absolute;
     bottom: 5%;

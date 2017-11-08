@@ -48,13 +48,6 @@
 
         <input type='button' value='Hinzufügen' onclick='neueRegel();' />
 
-        <br/>
-        <br/>
-        <br/>
-
-        <input id='bandEingabe' type='text' name='bandEingabe' placeholder='Bandeingabe' />
-        <input type='button' value='Starten' onclick="automatisch();" />
-
     </form>
 
     <ul id='regeln'></ul>
@@ -62,6 +55,9 @@
     <button id='speichern' onclick="speichern();">Speichern</button>
     <button id='laden' onclick="laden();">Laden</button>
     <button id='reset' onclick="reset();">Reset</button>
+    <input id='bandEingabe' type='text' name='bandEingabe' placeholder='Bandeingabe' />
+    <input id='starten' type='button' value='Starten' onclick="automatisch();" />
+
     <button id='status' onclick="statusWechseln(this);" style="background-color:red;">Status ändern</button>
 
     <script type="text/javascript">
