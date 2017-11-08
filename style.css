@@ -89,12 +89,25 @@ html,body {
   height: 47px;
 }
 
+@keyframes input {
+    from {
+        opacity: 0;
+        margin-right: -75px;
+    }
+
+    to {
+        opacity: 1;
+        margin-right: 3px;
+    }
+}
+
 #band .element {
   float: right;
   width: 35px;
   height: 35px;
   margin: 3px;
   border: 3px solid red;
+  animation: input 1s ease-in-out;
 }
 
 #band .element:first-child {
@@ -154,7 +167,7 @@ html,body {
     position: absolute;
     top: 40%;
     left: 10%;
-    width: 50%;
+    width: 15%;
 }
 
 #speichern {
@@ -169,9 +182,19 @@ html,body {
     left: 7%;
 }
 
+#reset {
+    position: absolute;
+    bottom: 5%;
+    left: 11.5%;
+}
+
 #status {
     position: absolute;
     bottom: 5%;
     right: 15%;
     color: white;
+}
+
+#status:disabled {
+    cursor: not-allowed;
 }

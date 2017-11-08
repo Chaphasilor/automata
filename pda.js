@@ -4,6 +4,9 @@ var zustand = 0;
 
 var status = 0;
 
+removed = true;
+
+
 function neueRegel() {
 
     if (status == 0) {
@@ -22,13 +25,19 @@ function neueRegel() {
 
 }
 
-document.addEventListener("keypress", function() {eingabeVerarbeiten(event);});
 
-function eingabeVerarbeiten(event) {
+document.addEventListener("keypress", function() {eingabeVerarbeiten(String.fromCharCode(event.keyCode).toLowerCase());});
 
-    if (status == 1) {
 
-        var key = String.fromCharCode(event.keyCode).toLowerCase();
+function eingabeVerarbeiten(key) {
+
+    if (status == 1 && removed == true && regeln.length>0) {
+
+        for (var i = 0; i < document.getElementById('regeln').getElementsByTagName('li').length; i++) {
+            document.getElementById('regeln').getElementsByTagName('li')[i].style.backgroundColor = "white";
+        }
+
+        add(key);
 
         var n = 0;
         var m = regeln.length;
@@ -38,15 +47,9 @@ function eingabeVerarbeiten(event) {
 
             if (regeln[n][1] == key) {
 
-                // console.log('almost almost nice');
-
                 if (regeln[n][0] == zustand) {
 
-                    // console.log('almost nice');
-
                     if (regeln[n][2] == keller.getElementsByTagName('div')[0].getElementsByTagName('div')[0].innerHTML) {
-
-                        // console.log('nice');
 
                         switch (regeln[n][4]) {
                             case "push":
@@ -69,6 +72,10 @@ function eingabeVerarbeiten(event) {
 
                         zustand = regeln[n][3];
 
+                        document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "green";
+
+                        automat.getElementsByTagName('div')[0].innerHTML = zustand;
+
                         executed = true;
 
                     }
@@ -81,9 +88,16 @@ function eingabeVerarbeiten(event) {
 
         }
 
+        if (executed == false) {
+
+            fail();
+
+        }
+
     }
 
 }
+
 
 function push(n) {
 
@@ -98,13 +112,65 @@ function push(n) {
 
 }
 
+
 async function pop() {
 
-    keller.getElementsByTagName('div')[0].className = "disappear";
+    if (removed == true) {
 
-    await sleep(1000);
+        removed = false;
 
-    keller.getElementsByTagName('div')[0].remove();
+        keller.getElementsByTagName('div')[0].className = "disappear";
+
+        await sleep(1000);
+
+        keller.getElementsByTagName('div')[0].remove();
+
+        removed = true;
+
+    }
+
+}
+
+
+function add(key) {
+
+    var element = document.createElement("div");
+    element.className = "element";
+    var center = document.createElement("div");
+    var text = document.createTextNode(key);
+    center.appendChild(text);
+    element.appendChild(center);
+
+    band.insertBefore(element, band.getElementsByTagName('div')[0]);
+
+}
+
+
+function fail() {
+
+    automat.style.borderColor = "red";
+    automat.style.borderWidth = "10px";
+
+    statusWechseln(document.getElementById('status'));
+
+    document.getElementById('status').disabled = true;
+
+}
+
+
+async function automatisch() {
+
+    input = document.getElementById('bandEingabe').value;
+
+    statusWechseln(document.getElementById('status'));
+
+    for (var i = 0; i < input.length; i++) {
+
+        eingabeVerarbeiten(input.charAt(i).toLowerCase());
+
+        await sleep(2000);
+
+    }
 
 }
 
@@ -118,6 +184,7 @@ function speichern() {
     alert('Erfolgreich gespeichert!');
 
 }
+
 
 function laden() {
 
@@ -133,23 +200,52 @@ function laden() {
 
 }
 
-function statusWechseln(x) {
+
+function reset() {
+
+    keller.innerHTML = "<div class='element'><div>#</div></div>";
+    band.innerHTML = "";
+    document.getElementById('regeln').innerHTML = "";
+
+    automat.getElementsByTagName('div')[0].innerHTML = "0";
+
+    automat.style.borderColor = "orange";
+    automat.style.borderWidth = "5px";
+
+    document.getElementById('status').disabled = false;
 
     if (status == 1) {
 
-        x.style.backgroundColor = "red";
-
-    } else if (status == 0)  {
-
-        x.style.backgroundColor = "green";
+        statusWechseln(document.getElementById('status'));
 
     }
 
-    status ^= true;
-
-    console.log(status);
+    regeln = [];
+    zustand = 0;
 
 }
+
+
+function statusWechseln(x) {
+
+    if (regeln.length>0) {
+
+        if (status == 1) {
+
+            x.style.backgroundColor = "red";
+
+        } else if (status == 0)  {
+
+            x.style.backgroundColor = "green";
+
+        }
+
+        status ^= true;
+
+    }
+
+}
+
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

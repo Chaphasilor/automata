@@ -19,52 +19,10 @@
         <div>#</div>
       </div>
 
-      <div class='element'>
-        <div>#</div>
-      </div>
-
-      <div class='element'>
-        <div>#</div>
-      </div>
-
-      <div class='element'>
-        <div>#</div>
-      </div>
-
-      <div class='element'>
-        <div>#</div>
-      </div>
-
-      <div class='element'>
-        <div>#</div>
-      </div>
-
     </div>
 
 
-    <div id='band'>
-
-      <div class='element'>
-        <div>e</div>
-      </div>
-
-      <div class='element'>
-        <div>d</div>
-      </div>
-
-      <div class='element'>
-        <div>c</div>
-      </div>
-
-      <div class='element'>
-        <div>b</div>
-      </div>
-
-      <div class='element'>
-        <div>a</div>
-      </div>
-
-    </div>
+    <div id='band'></div>
 
     <div id='automat'>
 
@@ -90,18 +48,27 @@
 
         <input type='button' value='Hinzufügen' onclick='neueRegel();' />
 
+        <br/>
+        <br/>
+        <br/>
+
+        <input id='bandEingabe' type='text' name='bandEingabe' placeholder='Bandeingabe' />
+        <input type='button' value='Starten' onclick="automatisch();" />
+
     </form>
 
     <ul id='regeln'></ul>
 
     <button id='speichern' onclick="speichern();">Speichern</button>
     <button id='laden' onclick="laden();">Laden</button>
+    <button id='reset' onclick="reset();">Reset</button>
     <button id='status' onclick="statusWechseln(this);" style="background-color:red;">Status ändern</button>
 
     <script type="text/javascript">
 
         var keller = document.getElementById('keller');
         var band = document.getElementById('band');
+        var automat = document.getElementById('automat');
 
     </script>
 
