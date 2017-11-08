@@ -51,19 +51,12 @@ function eingabeVerarbeiten(event) {
                         switch (regeln[n][4]) {
                             case "push":
 
-                                var element = document.createElement("div");
-                                element.className = "element";
-                                var center = document.createElement("div");
-                                var text = document.createTextNode(regeln[n][5]);
-                                center.appendChild(text);
-                                element.appendChild(center);
-
-                                keller.insertBefore(element, keller.getElementsByTagName('div')[0]);
+                                push(n);
 
                                 break;
                             case "pop":
 
-                                keller.getElementsByTagName('div')[0].remove();
+                                pop();
 
                                 break;
                             case "nop":
@@ -89,6 +82,29 @@ function eingabeVerarbeiten(event) {
         }
 
     }
+
+}
+
+function push(n) {
+
+    var element = document.createElement("div");
+    element.className = "element";
+    var center = document.createElement("div");
+    var text = document.createTextNode(regeln[n][5]);
+    center.appendChild(text);
+    element.appendChild(center);
+
+    keller.insertBefore(element, keller.getElementsByTagName('div')[0]);
+
+}
+
+async function pop() {
+
+    keller.getElementsByTagName('div')[0].className = "disappear";
+
+    await sleep(1000);
+
+    keller.getElementsByTagName('div')[0].remove();
 
 }
 
@@ -129,8 +145,12 @@ function statusWechseln(x) {
 
     }
 
-    status ^= true
+    status ^= true;
 
     console.log(status);
 
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
