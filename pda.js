@@ -2,6 +2,8 @@ var regeln = [];
 
 var zustand = 0;
 
+var endzustand = 0;
+
 var status = 0;
 
 removed = true;
@@ -13,11 +15,13 @@ function neueRegel() {
 
         var temp = [document.getElementById('zustand').value,document.getElementById('eingabe').value,document.getElementById('top').value,document.getElementById('zustand_neu').value,document.getElementById('funktion').value,document.getElementById('push').value];
 
-        console.log(temp);
-
         regeln.push(temp);
 
-        // console.log("Regeln: " + regeln[1]);
+        if (temp[3] > endzustand) {
+
+            endzustand = temp[3];
+
+        }
 
         document.getElementById('regeln').innerHTML += "<li>"+temp[0]+", "+temp[1]+", "+temp[2]+" --> "+temp[3]+", "+temp[4]+"("+temp[5]+")";
 
@@ -72,9 +76,18 @@ function eingabeVerarbeiten(key) {
 
                         zustand = regeln[n][3];
 
+                        if (zustand == endzustand) {
+
+                            automat.getElementsByTagName('div')[0].innerHTML = "<div>"+zustand+"</div>";
+
+                        } else {
+
+                            automat.getElementsByTagName('div')[0].innerHTML = zustand;
+
+                        }
+
                         document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "green";
 
-                        automat.getElementsByTagName('div')[0].innerHTML = zustand;
 
                         executed = true;
 
@@ -150,6 +163,7 @@ function fail() {
 
     automat.style.borderColor = "red";
     automat.style.borderWidth = "10px";
+    automat.getElementsByTagName('div')[0].innerHTML = "F";
 
     statusWechseln(document.getElementById('status'));
 
@@ -172,14 +186,26 @@ async function automatisch() {
 
     }
 
+    if ( (zustand != endzustand) || (keller.getElementsByClassName('element').length > 1) ) {
+
+        fail();
+        
+    } else {
+
+        automat.style.borderColor = "green";
+        automat.style.borderWidth = "10px";
+
+    }
+
 }
 
 
 function speichern() {
 
     localStorage.setItem('regeln', JSON.stringify(regeln));
+    localStorage.setItem('endzustand', endzustand);
 
-    console.log(localStorage.getItem('regeln'));
+    //console.log(localStorage.getItem('regeln'));
 
     alert('Erfolgreich gespeichert!');
 
@@ -189,6 +215,7 @@ function speichern() {
 function laden() {
 
     regeln = JSON.parse(localStorage.getItem('regeln'));
+    endzustand = localStorage.getItem('endzustand');
 
     for (var i = 0; i < regeln.length; i++) {
 
@@ -211,6 +238,8 @@ function reset() {
 
     automat.style.borderColor = "orange";
     automat.style.borderWidth = "5px";
+
+    document.getElementById('input').reset();
 
     document.getElementById('status').disabled = false;
 

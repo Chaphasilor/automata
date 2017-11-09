@@ -85,7 +85,7 @@ html,body {
   left: 1%;
   border: 3px solid grey;
   border-right: 3px dashed blue;
-  width: 80%;
+  width: 86%;
   height: 47px;
 }
 
@@ -129,10 +129,10 @@ html,body {
 
 #automat {
     position: absolute;
-    top: 35%;
-    right: 15%;
-    width: 30%;
-    height: 25%;
+    top: 10%;
+    left: 1%;
+    width: 86%;
+    height: 50%;
     border: 5px solid orange;
 }
 
@@ -144,10 +144,25 @@ html,body {
     display: block;
     width: 2em;
     height: 2em;
-    font-size: 3em;
+    font-size: 5em;
     font-weight: bold;
     line-height: 2em;
     text-align: center;
+    padding: 0;
+    border: 3px solid blue;
+    border-radius: 50%;
+}
+
+#automat div div {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    display: block;
+    width: 1.5em;
+    height: 1.5em;
+    line-height: 1.5em;
+    font-size: 1em;
     padding: 0;
     border: 3px solid blue;
     border-radius: 50%;
@@ -157,7 +172,7 @@ html,body {
 
 #input {
     position: absolute;
-    bottom: 15%;
+    bottom: 25%;
     left: 10%;
     width: 70%;
     height: 10%;
@@ -165,8 +180,8 @@ html,body {
 
 #regeln {
     position: absolute;
-    top: 40%;
-    left: 10%;
+    top: 10%;
+    left: 1%;
     width: 15%;
 }
 
