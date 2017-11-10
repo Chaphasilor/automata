@@ -18,16 +18,6 @@ function neueRegel() {
 
         var temp = [document.getElementById('zustand').value,document.getElementById('eingabe').value,document.getElementById('top').value,document.getElementById('zustand_neu').value,document.getElementById('funktion').value,document.getElementById('push').value];
 
-        regeln.push(temp);
-
-        if (temp[3] > endzustand) {
-
-            endzustand = temp[3];
-
-        }
-
-        document.getElementById('regeln').innerHTML += "<li>"+temp[0]+", "+temp[1]+", "+temp[2]+" --> "+temp[3]+", "+temp[4]+"("+temp[5]+")";
-
         for (var i = 0; i < regeln.length; i++) {
 
             if ( (regeln[i][0] == temp[0]) && (regeln[i][1] == temp[1]) && (regeln[i][2] == temp[2]) ) {
@@ -37,6 +27,16 @@ function neueRegel() {
             }
 
         }
+
+        regeln.push(temp);
+
+        if (temp[3] > endzustand) {
+
+            endzustand = temp[3];
+
+        }
+
+        document.getElementById('regeln').innerHTML += "<li>"+temp[0]+", "+temp[1]+", "+temp[2]+" --> "+temp[3]+", "+temp[4]+"("+temp[5]+")";
 
     }
 
@@ -48,85 +48,87 @@ document.addEventListener("keypress", function() {eingabeVerarbeiten(String.from
 
 function eingabeVerarbeiten(key) {
 
-    if (deterministisch == true) {
-
         if (status == 1 && animationFertig == true && regeln.length>0) {
 
-            for (var i = 0; i < document.getElementById('regeln').getElementsByTagName('li').length; i++) {
-                document.getElementById('regeln').getElementsByTagName('li')[i].style.backgroundColor = "white";
-            }
+            if (deterministisch == true) {
 
-            add(key);
+                for (var i = 0; i < document.getElementById('regeln').getElementsByTagName('li').length; i++) {
+                    document.getElementById('regeln').getElementsByTagName('li')[i].style.backgroundColor = "white";
+                }
 
-            var n = 0;
-            var m = regeln.length;
-            var executed = false;
+                add(key);
 
-            while (!executed && n<m) {
+                var n = 0;
+                var m = regeln.length;
+                var executed = false;
 
-                if (regeln[n][1] == key) {
+                while (!executed && n<m) {
 
-                    if (regeln[n][0] == zustand) {
+                    if (regeln[n][1] == key) {
 
-                        if (regeln[n][2] == keller.getElementsByTagName('div')[0].getElementsByTagName('div')[0].innerHTML) {
+                        if (regeln[n][0] == zustand) {
 
-                            switch (regeln[n][4]) {
-                                case "push":
+                            if (regeln[n][2] == keller.getElementsByTagName('div')[0].getElementsByTagName('div')[0].innerHTML) {
 
-                                    push(n);
+                                switch (regeln[n][4]) {
+                                    case "push":
 
-                                    break;
-                                case "pop":
+                                        push(n);
 
-                                    pop();
+                                        break;
+                                    case "pop":
 
-                                    break;
-                                case "nop":
+                                        pop();
 
-                                    break;
-                                default:
-                                    alert('Ein Fehler ist aufgetreten!');
+                                        break;
+                                    case "nop":
+
+                                        break;
+                                    default:
+                                        alert('Ein Fehler ist aufgetreten!');
+
+                                }
+
+                                zustand = regeln[n][3];
+
+                                if (zustand == endzustand) {
+
+                                    automat.getElementsByTagName('div')[0].innerHTML = "<div>"+zustand+"</div>";
+
+                                } else {
+
+                                    automat.getElementsByTagName('div')[0].innerHTML = zustand;
+
+                                }
+
+                                document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "green";
+
+
+                                executed = true;
 
                             }
-
-                            zustand = regeln[n][3];
-
-                            if (zustand == endzustand) {
-
-                                automat.getElementsByTagName('div')[0].innerHTML = "<div>"+zustand+"</div>";
-
-                            } else {
-
-                                automat.getElementsByTagName('div')[0].innerHTML = zustand;
-
-                            }
-
-                            document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "green";
-
-
-                            executed = true;
 
                         }
 
                     }
 
+                    n++;
+
                 }
 
-                n++;
+                if (executed == false) {
+
+                    fail();
+
+                }
 
             }
 
-            if (executed == false) {
+        else {
 
-                fail();
-
-            }
+            window.alert("Dynamische Eingabe ist nur bei deterministischen Automaten möglich!");
 
         }
-
-    } else {
-
-        window.alert("Dynamische Eingabe ist nur bei deterministischen Automaten möglich!");
 
     }
 
@@ -240,8 +242,33 @@ function backtrack(input, zeichen) {
     if ( (zustand == endzustand) && (backtrackKeller[0] == '#')) {
 
         console.log('I feel so happy!!!');
+        console.log(zustand);
+        console.log(backtrackKeller);
+
+        for (var i = 0; i < entscheidungen.length; i++) {
+
+            console.log((i+1)+'. Zweig:');
+
+            console.log('Zustand: '+entscheidungen[i][0]);
+            console.log('Zeichen: '+input.charAt(entscheidungen[i][1]));
+
+            console.log('Keller:');
+            for (var n = 0; n < entscheidungen[i][2].length; n++) {
+                console.log((n+1)+'. Symbol: '+entscheidungen[i][2][n]);
+            }
+
+            console.log('Optionen:');
+            for (var n = 0; n < entscheidungen[i][2].length; n++) {
+                console.log((n+1)+'. Option: '+entscheidungen[i][3][n]);
+            }
+
+            console.log('Auszufürende Option: '+entscheidungen[i][4]);
+
+        }
 
     } else {
+
+        console.log('Looking for rules...');
 
         var matches = 0;
         var tempEntscheidungen = [];
@@ -268,13 +295,17 @@ function backtrack(input, zeichen) {
 
         if (matches > 1) {
 
-            entscheidungen.push(zustand,zeichen,backtrackKeller,tempEntscheidungen,zuTreffendeEntscheidung);
+            console.log('Multiple rules found!');
+
+            tempArray = [zustand,zeichen,backtrackKeller,tempEntscheidungen,zuTreffendeEntscheidung]
+
+            entscheidungen.push(tempArray);
 
 
-            switch (tempEntscheidungen[zuTreffendeEntscheidung][4]) {
+            switch (regeln[tempEntscheidungen[zuTreffendeEntscheidung]][4]) {
                 case "push":
 
-                    backtrackKeller.unshift(tempEntscheidungen[zuTreffendeEntscheidung][5])
+                    backtrackKeller.unshift(regeln[tempEntscheidungen[zuTreffendeEntscheidung]][5])
 
                     break;
                 case "pop":
@@ -287,6 +318,7 @@ function backtrack(input, zeichen) {
                     break;
                 default:
                     alert('Ein Fehler ist aufgetreten!');
+                    console.log(3);
 
             }
 
@@ -299,7 +331,12 @@ function backtrack(input, zeichen) {
 
         } else if (matches < 1) {
 
-            entscheidungen[entscheidungen.length-1][4]++;
+            console.log('No rules found!');
+            console.log(entscheidungen[entscheidungen.length-1][4]);
+
+            console.log(entscheidungen[entscheidungen.length-1]);
+            console.log(entscheidungen[entscheidungen.length-1][3]);
+            console.log(entscheidungen[entscheidungen.length-1][4]);
 
             var regel = entscheidungen[entscheidungen.length-1][3][entscheidungen[entscheidungen.length-1][4]];
 
@@ -328,6 +365,7 @@ function backtrack(input, zeichen) {
                         break;
                     default:
                         alert('Ein Fehler ist aufgetreten!');
+                        console.log(1);
 
                 }
 
@@ -357,21 +395,21 @@ function backtrack(input, zeichen) {
 
         } else {
 
-            var regel = entscheidungen[entscheidungen.length-1][3][entscheidungen[entscheidungen.length-1][4]];
+            console.log('One rule found!');
 
-            zustand = regeln[regel][3];
+            zustand = regeln[tempEntscheidungen[0]][3];
 
             zeichen++;
 
-            switch (regeln[regel][4]) {
+            switch (regeln[tempEntscheidungen[0]][4]) {
                 case "push":
 
-                    backtrackKeller.unshift(regeln[regel][5]);
+                    backtrackKeller.unshift(regeln[tempEntscheidungen[0]][5]);
 
                     break;
                 case "pop":
 
-                    backtrackKeller.splice;
+                    backtrackKeller.splice(0,1);
 
                     break;
                 case "nop":
@@ -379,8 +417,12 @@ function backtrack(input, zeichen) {
                     break;
                 default:
                     alert('Ein Fehler ist aufgetreten!');
+                    console.log(2);
 
             }
+
+
+            backtrack(input, zeichen);
 
         }
 
