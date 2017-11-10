@@ -189,7 +189,7 @@ async function automatisch() {
     if ( (zustand != endzustand) || (keller.getElementsByClassName('element').length > 1) ) {
 
         fail();
-        
+
     } else {
 
         automat.style.borderColor = "green";
@@ -270,6 +270,24 @@ function statusWechseln(x) {
         }
 
         status ^= true;
+
+    }
+
+}
+
+
+function pushElement(x) {
+
+    push = document.getElementById('push');
+
+    if (x.value != 'push') {
+
+        push.disabled = true;
+        push.value = '';
+
+    } else {
+
+        push.disabled = false;
 
     }
 
