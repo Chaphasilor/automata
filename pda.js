@@ -6,7 +6,9 @@ var endzustand = 0;
 
 var status = 0;
 
-removed = true;
+animationFertig = true;
+
+deterministisch = true;
 
 
 function neueRegel() {
@@ -25,6 +27,16 @@ function neueRegel() {
 
         document.getElementById('regeln').innerHTML += "<li>"+temp[0]+", "+temp[1]+", "+temp[2]+" --> "+temp[3]+", "+temp[4]+"("+temp[5]+")";
 
+        for (var i = 0; i < regeln.length; i++) {
+
+            if ( (regeln[i][0] == temp[0]) && (regeln[i][1] == temp[1]) && (regeln[i][2] == temp[2]) ) {
+
+                deterministisch = false;
+
+            }
+
+        }
+
     }
 
 }
@@ -35,77 +47,85 @@ document.addEventListener("keypress", function() {eingabeVerarbeiten(String.from
 
 function eingabeVerarbeiten(key) {
 
-    if (status == 1 && removed == true && regeln.length>0) {
+    if (deterministisch == true) {
 
-        for (var i = 0; i < document.getElementById('regeln').getElementsByTagName('li').length; i++) {
-            document.getElementById('regeln').getElementsByTagName('li')[i].style.backgroundColor = "white";
-        }
+        if (status == 1 && animationFertig == true && regeln.length>0) {
 
-        add(key);
+            for (var i = 0; i < document.getElementById('regeln').getElementsByTagName('li').length; i++) {
+                document.getElementById('regeln').getElementsByTagName('li')[i].style.backgroundColor = "white";
+            }
 
-        var n = 0;
-        var m = regeln.length;
-        var executed = false;
+            add(key);
 
-        while (!executed && n<m) {
+            var n = 0;
+            var m = regeln.length;
+            var executed = false;
 
-            if (regeln[n][1] == key) {
+            while (!executed && n<m) {
 
-                if (regeln[n][0] == zustand) {
+                if (regeln[n][1] == key) {
 
-                    if (regeln[n][2] == keller.getElementsByTagName('div')[0].getElementsByTagName('div')[0].innerHTML) {
+                    if (regeln[n][0] == zustand) {
 
-                        switch (regeln[n][4]) {
-                            case "push":
+                        if (regeln[n][2] == keller.getElementsByTagName('div')[0].getElementsByTagName('div')[0].innerHTML) {
 
-                                push(n);
+                            switch (regeln[n][4]) {
+                                case "push":
 
-                                break;
-                            case "pop":
+                                    push(n);
 
-                                pop();
+                                    break;
+                                case "pop":
 
-                                break;
-                            case "nop":
+                                    pop();
 
-                                break;
-                            default:
-                                alert('Ein Fehler ist aufgetreten!');
+                                    break;
+                                case "nop":
+
+                                    break;
+                                default:
+                                    alert('Ein Fehler ist aufgetreten!');
+
+                            }
+
+                            zustand = regeln[n][3];
+
+                            if (zustand == endzustand) {
+
+                                automat.getElementsByTagName('div')[0].innerHTML = "<div>"+zustand+"</div>";
+
+                            } else {
+
+                                automat.getElementsByTagName('div')[0].innerHTML = zustand;
+
+                            }
+
+                            document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "green";
+
+
+                            executed = true;
 
                         }
-
-                        zustand = regeln[n][3];
-
-                        if (zustand == endzustand) {
-
-                            automat.getElementsByTagName('div')[0].innerHTML = "<div>"+zustand+"</div>";
-
-                        } else {
-
-                            automat.getElementsByTagName('div')[0].innerHTML = zustand;
-
-                        }
-
-                        document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "green";
-
-
-                        executed = true;
 
                     }
 
                 }
 
+                n++;
+
             }
 
-            n++;
+            if (executed == false) {
+
+                fail();
+
+            }
 
         }
 
-        if (executed == false) {
+    } else {
 
-            fail();
-
-        }
+        window.alert("Dynamische Eingabe ist nur bei deterministischen Automaten möglich!");
 
     }
 
@@ -128,9 +148,9 @@ function push(n) {
 
 async function pop() {
 
-    if (removed == true) {
+    if (animationFertig == true) {
 
-        removed = false;
+        animationFertig = false;
 
         keller.getElementsByTagName('div')[0].className = "disappear";
 
@@ -138,7 +158,7 @@ async function pop() {
 
         keller.getElementsByTagName('div')[0].remove();
 
-        removed = true;
+        animationFertig = true;
 
     }
 
@@ -172,30 +192,52 @@ function fail() {
 }
 
 
+function finish() {
+
+    automat.style.borderColor = "green";
+    automat.style.borderWidth = "10px";
+
+}
+
+
 async function automatisch() {
 
-    input = document.getElementById('bandEingabe').value;
+    if (deterministisch == true) {
 
-    statusWechseln(document.getElementById('status'));
+        input = document.getElementById('bandEingabe').value;
 
-    for (var i = 0; i < input.length; i++) {
+        statusWechseln(document.getElementById('status'));
 
-        eingabeVerarbeiten(input.charAt(i).toLowerCase());
+        for (var i = 0; i < input.length; i++) {
 
-        await sleep(2000);
+            eingabeVerarbeiten(input.charAt(i).toLowerCase());
 
-    }
+            await sleep(2000);
 
-    if ( (zustand != endzustand) || (keller.getElementsByClassName('element').length > 1) ) {
+        }
 
-        fail();
-        
+        if ( (zustand != endzustand) || (keller.getElementsByClassName('element').length > 1) ) {
+
+            fail();
+
+        } else {
+
+            finish();
+
+        }
+
     } else {
 
-        automat.style.borderColor = "green";
-        automat.style.borderWidth = "10px";
+        backtrack();
 
     }
+
+}
+
+
+function backtrack() {
+
+    
 
 }
 
@@ -204,6 +246,7 @@ function speichern() {
 
     localStorage.setItem('regeln', JSON.stringify(regeln));
     localStorage.setItem('endzustand', endzustand);
+    localStorage.setItem('deterministisch', deterministisch);
 
     //console.log(localStorage.getItem('regeln'));
 
@@ -216,6 +259,7 @@ function laden() {
 
     regeln = JSON.parse(localStorage.getItem('regeln'));
     endzustand = localStorage.getItem('endzustand');
+    deterministisch = localStorage.getItem('deterministisch');
 
     for (var i = 0; i < regeln.length; i++) {
 
