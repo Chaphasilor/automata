@@ -1,13 +1,14 @@
 var regeln = [];
 
+entscheidungen = [];
+zuTreffendeEntscheidung = 0;
+backtrackKeller = ['#'];
+
 var zustand = 0;
-
 var endzustand = 0;
-
 var status = 0;
 
 animationFertig = true;
-
 deterministisch = true;
 
 
@@ -202,9 +203,9 @@ function finish() {
 
 async function automatisch() {
 
-    if (deterministisch == true) {
+    input = document.getElementById('bandEingabe').value;
 
-        input = document.getElementById('bandEingabe').value;
+    if (deterministisch == true) {
 
         statusWechseln(document.getElementById('status'));
 
@@ -228,16 +229,162 @@ async function automatisch() {
 
     } else {
 
-        backtrack();
+        backtrack(input, 0);
 
     }
 
 }
 
+function backtrack(input, zeichen) {
 
-function backtrack() {
+    if ( (zustand == endzustand) && (backtrackKeller[0] == '#')) {
 
-    
+        console.log('I feel so happy!!!');
+
+    } else {
+
+        var matches = 0;
+        var tempEntscheidungen = [];
+
+        for (var i = 0; i < regeln.length; i++) {
+
+            if (regeln[i][0] == zustand) {
+
+                if (regeln[i][1] == input.charAt(zeichen)) {
+
+                    if (regeln[i][2] == backtrackKeller[0]) {
+
+                        matches++;
+
+                        tempEntscheidungen.push(i);
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        if (matches > 1) {
+
+            entscheidungen.push(zustand,zeichen,backtrackKeller,tempEntscheidungen,zuTreffendeEntscheidung);
+
+
+            switch (tempEntscheidungen[zuTreffendeEntscheidung][4]) {
+                case "push":
+
+                    backtrackKeller.unshift(tempEntscheidungen[zuTreffendeEntscheidung][5])
+
+                    break;
+                case "pop":
+
+                    backtrackKeller.splice(0,1);
+
+                    break;
+                case "nop":
+
+                    break;
+                default:
+                    alert('Ein Fehler ist aufgetreten!');
+
+            }
+
+            zustand = regeln[tempEntscheidungen[zuTreffendeEntscheidung]][3];
+
+            zeichen++;
+
+
+            backtrack(input, zeichen);
+
+        } else if (matches < 1) {
+
+            entscheidungen[entscheidungen.length-1][4]++;
+
+            var regel = entscheidungen[entscheidungen.length-1][3][entscheidungen[entscheidungen.length-1][4]];
+
+            if (entscheidungen[entscheidungen.length-1][3].length > entscheidungen[entscheidungen.length-1][4]) {
+
+                backtrackKeller = entscheidungen[entscheidungen.length-1][2];
+
+                zustand = entscheidungen[entscheidungen.length-1][0];
+
+                zeichen = entscheidungen[entscheidungen.length-1][1];
+
+
+                switch (regeln[regel][4]) {
+                    case "push":
+
+                        backtrackKeller.unshift(regeln[regel][5])
+
+                        break;
+                    case "pop":
+
+                        backtrackKeller.splice(0,1);
+
+                        break;
+                    case "nop":
+
+                        break;
+                    default:
+                        alert('Ein Fehler ist aufgetreten!');
+
+                }
+
+                zustand = regeln[regel][3];
+
+                zeichen++;
+
+
+                backtrack(input, zeichen);
+
+            } else {
+
+                entscheidungen.splice(entscheidungen.length-1,1);
+
+                zustand = entscheidungen[entscheidungen.length-1][0];
+
+                zeichen = entscheidungen[entscheidungen.length-1][1];
+
+                backtrackKeller = entscheidungen[entscheidungen.length-1][2];
+
+                entscheidungen[entscheidungen.length-1][4]++;
+
+
+                backtrack(input, zeichen);
+
+            }
+
+        } else {
+
+            var regel = entscheidungen[entscheidungen.length-1][3][entscheidungen[entscheidungen.length-1][4]];
+
+            zustand = regeln[regel][3];
+
+            zeichen++;
+
+            switch (regeln[regel][4]) {
+                case "push":
+
+                    backtrackKeller.unshift(regeln[regel][5]);
+
+                    break;
+                case "pop":
+
+                    backtrackKeller.splice;
+
+                    break;
+                case "nop":
+
+                    break;
+                default:
+                    alert('Ein Fehler ist aufgetreten!');
+
+            }
+
+        }
+
+    }
 
 }
 
