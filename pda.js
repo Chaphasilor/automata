@@ -1,7 +1,6 @@
 var regeln = [];
 
 entscheidungen = [];
-zuTreffendeEntscheidung = 0;
 backtrackKeller = ['#'];
 
 var zustand = 0;
@@ -192,6 +191,8 @@ function fail() {
 
     document.getElementById('status').disabled = true;
 
+    console.log('FAILED');
+
 }
 
 
@@ -207,9 +208,9 @@ async function automatisch() {
 
     input = document.getElementById('bandEingabe').value;
 
-    if (deterministisch == true) {
+    statusWechseln(document.getElementById('status'));
 
-        statusWechseln(document.getElementById('status'));
+    if (deterministisch == true) {
 
         for (var i = 0; i < input.length; i++) {
 
@@ -239,9 +240,11 @@ async function automatisch() {
 
 function backtrack(input, zeichen) {
 
-    if ( (zustand == endzustand) && (backtrackKeller[0] == '#')) {
+    if ( (input.length == zeichen) && (zustand == endzustand) && (backtrackKeller[0] == '#')) {
 
-        console.log('I feel so happy!!!');
+        statusWechseln(document.getElementById('status'));
+
+        alert('I feel so happy!!!');
         console.log(zustand);
         console.log(backtrackKeller);
 
@@ -268,7 +271,9 @@ function backtrack(input, zeichen) {
 
     } else {
 
-        console.log('Looking for rules...');
+        // await sleep(1000);
+        console.log('Looking for rules matching '+zustand+', '+input.charAt(zeichen)+', '+backtrackKeller+'...');
+        // await sleep(2000);
 
         var matches = 0;
         var tempEntscheidungen = [];
@@ -293,133 +298,105 @@ function backtrack(input, zeichen) {
 
         }
 
-        if (matches > 1) {
+        if ( (matches == 0) || (zeichen >= input.length) ) {
 
-            console.log('Multiple rules found!');
+            console.log('Backtracking...');
+            // await sleep(5000);
 
-            tempArray = [zustand,zeichen,backtrackKeller,tempEntscheidungen,zuTreffendeEntscheidung]
+            if (entscheidungen.length > 0) {
 
-            entscheidungen.push(tempArray);
+                console.log(entscheidungen[entscheidungen.length-1]);
+                entscheidungen[entscheidungen.length-1][4]++;
 
+                while (entscheidungen[entscheidungen.length-1][3].length <= (entscheidungen[entscheidungen.length-1][4]) ) {
 
-            switch (regeln[tempEntscheidungen[zuTreffendeEntscheidung]][4]) {
-                case "push":
+                    if (entscheidungen.length > 1) {
 
-                    backtrackKeller.unshift(regeln[tempEntscheidungen[zuTreffendeEntscheidung]][5])
+                        console.log('Going back to previous decision');
 
-                    break;
-                case "pop":
+                        entscheidungen.splice(entscheidungen.length-1,1);
+                        entscheidungen[entscheidungen.length-1][4]++;
 
-                    backtrackKeller.splice(0,1);
+                    } else {
 
-                    break;
-                case "nop":
-
-                    break;
-                default:
-                    alert('Ein Fehler ist aufgetreten!');
-                    console.log(3);
-
-            }
-
-            zustand = regeln[tempEntscheidungen[zuTreffendeEntscheidung]][3];
-
-            zeichen++;
-
-
-            backtrack(input, zeichen);
-
-        } else if (matches < 1) {
-
-            console.log('No rules found!');
-            console.log(entscheidungen[entscheidungen.length-1][4]);
-
-            console.log(entscheidungen[entscheidungen.length-1]);
-            console.log(entscheidungen[entscheidungen.length-1][3]);
-            console.log(entscheidungen[entscheidungen.length-1][4]);
-
-            var regel = entscheidungen[entscheidungen.length-1][3][entscheidungen[entscheidungen.length-1][4]];
-
-            if (entscheidungen[entscheidungen.length-1][3].length > entscheidungen[entscheidungen.length-1][4]) {
-
-                backtrackKeller = entscheidungen[entscheidungen.length-1][2];
-
-                zustand = entscheidungen[entscheidungen.length-1][0];
-
-                zeichen = entscheidungen[entscheidungen.length-1][1];
-
-
-                switch (regeln[regel][4]) {
-                    case "push":
-
-                        backtrackKeller.unshift(regeln[regel][5])
-
-                        break;
-                    case "pop":
-
-                        backtrackKeller.splice(0,1);
-
-                        break;
-                    case "nop":
-
-                        break;
-                    default:
-                        alert('Ein Fehler ist aufgetreten!');
-                        console.log(1);
+                        entscheidungen[entscheidungen.length-1][4] = 0;
+                        status = 0;
+                    }
 
                 }
 
-                zustand = regeln[regel][3];
+                if (status == 1) {
 
-                zeichen++;
+                    console.log('Derzeitiger Backtrackkeller: '+backtrackKeller);
+
+                    var regel = entscheidungen[entscheidungen.length-1][3][entscheidungen[entscheidungen.length-1][4]];
+
+                    zustand = entscheidungen[entscheidungen.length-1][0];
+
+                    zeichen = entscheidungen[entscheidungen.length-1][1];
+
+                    // backtrackKeller = entscheidungen[entscheidungen.length-1][2];
+                    backtrackKeller = JSON.parse(localStorage.getItem('bt'+(entscheidungen.length-1)+'K'));
+                    console.log('Neuer Backtrackkeller: '+backtrackKeller);
 
 
-                backtrack(input, zeichen);
+                    regelAnwenden(regel);
+                    zeichen++;
+
+
+                    backtrack(input, zeichen);
+
+                } else {
+
+                    fail();
+
+                }
 
             } else {
 
-                entscheidungen.splice(entscheidungen.length-1,1);
-
-                zustand = entscheidungen[entscheidungen.length-1][0];
-
-                zeichen = entscheidungen[entscheidungen.length-1][1];
-
-                backtrackKeller = entscheidungen[entscheidungen.length-1][2];
-
-                entscheidungen[entscheidungen.length-1][4]++;
-
-
-                backtrack(input, zeichen);
+                fail();
 
             }
+
 
         } else {
 
-            console.log('One rule found!');
+            if (matches > 1) {
 
-            zustand = regeln[tempEntscheidungen[0]][3];
+                console.log('Multiple rules found!');
+                // await sleep(5000);
 
-            zeichen++;
+                if ( (entscheidungen.length > 0) && ( (entscheidungen[entscheidungen.length-1][0]==zustand) && (entscheidungen[entscheidungen.length-1][1]==zeichen) && (entscheidungen[entscheidungen.length-1][2]==backtrackKeller) && (entscheidungen[entscheidungen.length-1][3]==tempEntscheidungen) ) ) {
 
-            switch (regeln[tempEntscheidungen[0]][4]) {
-                case "push":
+                    var regel = entscheidungen[entscheidungen.length-1][3][entscheidungen[entscheidungen.length-1][4]];
 
-                    backtrackKeller.unshift(regeln[tempEntscheidungen[0]][5]);
+                } else {
 
-                    break;
-                case "pop":
+                    tempArray = [zustand,zeichen,backtrackKeller,tempEntscheidungen,0];
 
-                    backtrackKeller.splice(0,1);
+                    entscheidungen.push(tempArray);
 
-                    break;
-                case "nop":
+                    localStorage.setItem('bt'+(entscheidungen.length-1)+'K', JSON.stringify(backtrackKeller));
 
-                    break;
-                default:
-                    alert('Ein Fehler ist aufgetreten!');
-                    console.log(2);
+                    var regel = tempEntscheidungen[0];
+
+                }
+
+
+
+            } else {
+
+                console.log('One rule found!');
+                // await sleep(5000);
+
+                var regel = tempEntscheidungen[0];
 
             }
+
+
+            console.log('Derzeitiges Zeichen: '+zeichen);
+            regelAnwenden(regel);
+            zeichen++;
 
 
             backtrack(input, zeichen);
@@ -431,15 +408,51 @@ function backtrack(input, zeichen) {
 }
 
 
+function regelAnwenden(regel) {
+
+    zustand = regeln[regel][3];
+
+    switch (regeln[regel][4]) {
+        case "push":
+
+            backtrackKeller.unshift(regeln[regel][5]);
+
+            break;
+        case "pop":
+
+            console.log(backtrackKeller[0]);
+            backtrackKeller.splice(0,1);
+
+            break;
+        case "nop":
+
+            break;
+        default:
+            alert('Ein Fehler ist aufgetreten!');
+
+    }
+
+    console.log('Regel '+(regel+1)+' angewendet!');
+    // await sleep(1000);
+
+}
+
+
 function speichern() {
 
-    localStorage.setItem('regeln', JSON.stringify(regeln));
-    localStorage.setItem('endzustand', endzustand);
-    localStorage.setItem('deterministisch', deterministisch);
+    if (regeln.length > 0) {
 
-    //console.log(localStorage.getItem('regeln'));
+        localStorage.setItem('regeln', JSON.stringify(regeln));
+        localStorage.setItem('endzustand', endzustand);
+        localStorage.setItem('deterministisch', deterministisch);
 
-    alert('Erfolgreich gespeichert!');
+        alert('Erfolgreich gespeichert!');
+
+    } else {
+
+        alert('Es gibt noch keine Regeln!');
+
+    }
 
 }
 
