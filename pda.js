@@ -315,7 +315,7 @@ async function nichtDeterministisch(input, zeichen) {
         for (var i = 0; i < regelFolge.length; i++) {
 
             for (var n = 0; n < document.getElementById('regeln').getElementsByTagName('li').length; n++) {
-                document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "white";
+                document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "rgb(11,11,11)";
             }
 
             add(regeln[regelFolge[i]][1]);
@@ -561,7 +561,7 @@ function speichern() {
     localStorage.setItem('regeln', JSON.stringify(regeln));
     localStorage.setItem('definition', JSON.stringify(tempDef));
     localStorage.setItem('deterministisch', deterministisch);
-      
+
     alert('Erfolgreich gespeichert!');
 
   } else {
