@@ -75,7 +75,7 @@ function eingabeVerarbeiten(key) {
     if (status == 1 && removed == true && regeln.length>0) {
 
         for (var i = 0; i < document.getElementById('regeln').getElementsByTagName('li').length; i++) {
-            document.getElementById('regeln').getElementsByTagName('li')[i].style.backgroundColor = "white";
+            document.getElementById('regeln').getElementsByTagName('li')[i].style.backgroundColor = "rgb(11, 11, 11)";
         }
 
         add(key);
