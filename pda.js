@@ -93,7 +93,7 @@ function eingabeVerarbeiten(key) {
             if (deterministisch == true) {
 
                 for (var i = 0; i < document.getElementById('regeln').getElementsByTagName('li').length; i++) {
-                    document.getElementById('regeln').getElementsByTagName('li')[i].style.backgroundColor = "rgb(11, 11, 11)";
+                    document.getElementById('regeln').getElementsByTagName('li')[i].style.backgroundColor = "rgb(0, 0, 0)";
                 }
 
                 add(key);
@@ -168,6 +168,8 @@ function eingabeVerarbeiten(key) {
 
             window.alert("Dynamische Eingabe ist nur bei deterministischen Automaten möglich!");
 
+            statusWechseln(document.getElementById('status'));
+
         }
 
     }
@@ -235,7 +237,7 @@ function definitionAktualisieren() {
     definition.innerHTML += "<li>q<sub>0</sub> = {"+startZustand+"}";
     definition.innerHTML += "<li># = {"+anfangsSymbol+"}";
     definition.innerHTML += "<li>E = {"+endzustand+"}";
-    definition.innerHTML += "</ul>"
+    definition.innerHTML += "</ul>";
 
 }
 
@@ -261,6 +263,10 @@ function finish() {
 
     automat.style.borderColor = "green";
     automat.style.borderWidth = "10px";
+
+    for (var n = 0; n < document.getElementById('regeln').getElementsByTagName('li').length; n++) {
+        document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "rgb(0, 0, 0)";
+    }
 
     fertig = true;
 
@@ -315,7 +321,7 @@ async function nichtDeterministisch(input, zeichen) {
         for (var i = 0; i < regelFolge.length; i++) {
 
             for (var n = 0; n < document.getElementById('regeln').getElementsByTagName('li').length; n++) {
-                document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "rgb(11,11,11)";
+                document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "rgb(0, 0, 0)";
             }
 
             add(regeln[regelFolge[i]][1]);
@@ -604,6 +610,7 @@ function reset() {
         keller.innerHTML = "<div class='element'><div>#</div></div>";
         band.innerHTML = "";
         document.getElementById('regeln').innerHTML = "";
+        document.getElementById('definition').innerHTML = "";
 
         automat.getElementsByTagName('div')[0].innerHTML = "0";
 
@@ -655,6 +662,10 @@ function statusWechseln(x) {
         }
 
         status ^= true;
+
+    } else {
+
+        alert('Es sind noch keine Regeln vorhanden!');
 
     }
 

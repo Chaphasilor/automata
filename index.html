@@ -44,7 +44,7 @@
 
     <div id='steuerung'>
 
-        <div id='input'>
+        <form id='input'>
 
             <h3>Neue Regel:</h3>
 
@@ -64,14 +64,14 @@
             <input id="push" type="text" maxlength="1" name="push" placeholder="Element" />
 
             <br/>
-          
+
             <input id='add' type='button' value='Hinzufügen' onclick='neueRegel();' />
 
-        </div>
+        </form>
 
         <hr id='trennung'/>
 
-        <button id='status' onclick="statusWechseln(this);" style="background-color:red;">Status ändern</button>
+        <button id='status' onclick="statusWechseln(this);" style="background-color:red;">Dynamische Eingabe</button>
 
         <input id='bandEingabe' type='text' name='bandEingabe' placeholder='Bandeingabe' />
         <input id='starten' type='button' value='Starten' onclick="automatisch();" />
