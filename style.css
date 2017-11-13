@@ -181,13 +181,21 @@ html,body {
     border-radius: 50%;
 }
 
+#automat h3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+    width: 100%;
+}
+
 #regeln {
     position: absolute;
-    top: 0%;
-    left: 0%;
+    top: 0;
+    right: 0;
     width: 35%;
     height: 100%;
-    border-right: 3px solid red;
+    border-left: 3px solid red;
     margin: 0;
     padding-left: 3%;
     padding-top: 1%;
@@ -195,13 +203,15 @@ html,body {
 
 #definition {
     position: absolute;
-    top: 0%;
-    right: 0%;
+    top: 0;
+    left: 0;
     width: 35%;
     height: 100%;
-    border-left: 3px solid red;
+    border-right: 3px solid red;
     margin: 0;
-    padding: 0;
+    padding-left: 1%;
+    padding-top: 7%;
+    list-style-type: none;
 }
 
 
