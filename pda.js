@@ -1,11 +1,13 @@
 var regeln = [];
 
-entscheidungen = [];
-backtrackKeller = ['#'];
+var entscheidungen = [];
+var backtrackKeller = ['#'];
+var regelFolge = [];
 
 var zustand = 0;
 var endzustand = 0;
 var status = 0;
+var btResult;
 
 animationFertig = true;
 deterministisch = true;
@@ -232,42 +234,83 @@ async function automatisch() {
 
     } else {
 
-        backtrack(input, 0);
+        nichtDeterministisch(input, 0);
 
     }
 
 }
 
+
+async function nichtDeterministisch(input, zeichen) {
+
+    backtrack(input, zeichen);
+
+    if (btResult == true) {
+
+        console.log(regelFolge);
+
+        for (var i = 0; i < regelFolge.length; i++) {
+
+            for (var n = 0; n < document.getElementById('regeln').getElementsByTagName('li').length; n++) {
+                document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "white";
+            }
+
+            add(regeln[regelFolge[i]][1]);
+
+            switch (regeln[regelFolge[i]][4]) {
+                case "push":
+
+                    push(regelFolge[i]);
+
+                    break;
+                case "pop":
+
+                    pop();
+
+                    break;
+                case "nop":
+
+                    break;
+                default:
+                    alert('Ein Fehler ist aufgetreten!');
+
+            }
+
+            zustand = regeln[regelFolge[i]][3];
+
+            if (zustand == endzustand) {
+
+                automat.getElementsByTagName('div')[0].innerHTML = "<div>"+zustand+"</div>";
+
+            } else {
+
+                automat.getElementsByTagName('div')[0].innerHTML = zustand;
+
+            }
+
+            document.getElementById('regeln').getElementsByTagName('li')[regelFolge[i]].style.backgroundColor = "green";
+
+            await sleep(2000);
+
+        }
+
+    } else {
+
+        fail();
+
+    }
+
+}
+
+
+
 function backtrack(input, zeichen) {
 
     if ( (input.length == zeichen) && (zustand == endzustand) && (backtrackKeller[0] == '#')) {
 
-        statusWechseln(document.getElementById('status'));
+         btResult = true;
 
-        alert('I feel so happy!!!');
-        console.log(zustand);
-        console.log(backtrackKeller);
-
-        for (var i = 0; i < entscheidungen.length; i++) {
-
-            console.log((i+1)+'. Zweig:');
-
-            console.log('Zustand: '+entscheidungen[i][0]);
-            console.log('Zeichen: '+input.charAt(entscheidungen[i][1]));
-
-            console.log('Keller:');
-            for (var n = 0; n < entscheidungen[i][2].length; n++) {
-                console.log((n+1)+'. Symbol: '+entscheidungen[i][2][n]);
-            }
-
-            console.log('Optionen:');
-            for (var n = 0; n < entscheidungen[i][2].length; n++) {
-                console.log((n+1)+'. Option: '+entscheidungen[i][3][n]);
-            }
-
-            console.log('Auszufürende Option: '+entscheidungen[i][4]);
-
-        }
+         statusWechseln(document.getElementById('status'));
 
     } else {
 
@@ -307,6 +350,7 @@ function backtrack(input, zeichen) {
 
                 console.log(entscheidungen[entscheidungen.length-1]);
                 entscheidungen[entscheidungen.length-1][4]++;
+                regelFolge.splice(regelFolge.length-1,1);
 
                 while (entscheidungen[entscheidungen.length-1][3].length <= (entscheidungen[entscheidungen.length-1][4]) ) {
 
@@ -317,10 +361,13 @@ function backtrack(input, zeichen) {
                         entscheidungen.splice(entscheidungen.length-1,1);
                         entscheidungen[entscheidungen.length-1][4]++;
 
+                        regelFolge.splice(regelFolge.length-1,1);
+
                     } else {
 
                         entscheidungen[entscheidungen.length-1][4] = 0;
                         status = 0;
+
                     }
 
                 }
@@ -348,13 +395,13 @@ function backtrack(input, zeichen) {
 
                 } else {
 
-                    fail();
+                    btResult = false;
 
                 }
 
             } else {
 
-                fail();
+                btResult = false;
 
             }
 
@@ -432,7 +479,10 @@ function regelAnwenden(regel) {
 
     }
 
+    regelFolge.push(regel);
+    console.log(regelFolge);
     console.log('Regel '+(regel+1)+' angewendet!');
+
     // await sleep(1000);
 
 }
