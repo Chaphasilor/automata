@@ -2,11 +2,16 @@ var regeln = [];
 
 var zustand = 0;
 
-var endzustand = 0;
-
 var status = 0;
 
 removed = true;
+
+var q = [];
+var eingabeAlphabet = [];
+var kellerAlphabet = [];
+var startZustand = 0;
+var anfangsSymbol = "#";
+var endzustand = 0;
 
 
 function neueRegel() {
@@ -23,6 +28,38 @@ function neueRegel() {
 
         }
 
+        if (q.indexOf(temp[0]) == -1) {
+
+            q.push(temp[0]);
+
+        }
+
+        if (q.indexOf(temp[3]) == -1) {
+
+            q.push(temp[3]);
+
+        }
+
+        if (eingabeAlphabet.indexOf(temp[1]) == -1) {
+
+            eingabeAlphabet.push(temp[1]);
+
+        }
+
+        if (kellerAlphabet.indexOf(temp[2]) == -1) {
+
+            kellerAlphabet.push(temp[2]);
+
+        }
+
+        if (kellerAlphabet.indexOf(temp[5]) == -1) {
+
+            kellerAlphabet.push(temp[5]);
+
+        }
+
+        definitionAktualisieren();
+
         document.getElementById('regeln').innerHTML += "<li>"+temp[0]+", "+temp[1]+", "+temp[2]+" --> "+temp[3]+", "+temp[4]+"("+temp[5]+")";
 
     }
@@ -38,7 +75,7 @@ function eingabeVerarbeiten(key) {
     if (status == 1 && removed == true && regeln.length>0) {
 
         for (var i = 0; i < document.getElementById('regeln').getElementsByTagName('li').length; i++) {
-            document.getElementById('regeln').getElementsByTagName('li')[i].style.backgroundColor = "white";
+            document.getElementById('regeln').getElementsByTagName('li')[i].style.backgroundColor = "rgb(11, 11, 11)";
         }
 
         add(key);
@@ -159,6 +196,24 @@ function add(key) {
 }
 
 
+function definitionAktualisieren() {
+
+    definition.innerHTML = "";
+
+    definition.innerHTML = "<h3>A = (Q,Σ,Γ,q<sub>0</sub>,#,E)</h3>";
+
+    definition.innerHTML += "<ul>"
+    definition.innerHTML += "<li>Q = {"+q+"}</li>";
+    definition.innerHTML += "<li>Σ = {"+eingabeAlphabet+"}";
+    definition.innerHTML += "<li>Γ = {"+kellerAlphabet+"}";
+    definition.innerHTML += "<li>q<sub>0</sub> = {"+startZustand+"}";
+    definition.innerHTML += "<li># = {"+anfangsSymbol+"}";
+    definition.innerHTML += "<li>E = {"+endzustand+"}";
+    definition.innerHTML += "</ul>"
+
+}
+
+
 function fail() {
 
     automat.style.borderColor = "red";
@@ -189,7 +244,7 @@ async function automatisch() {
     if ( (zustand != endzustand) || (keller.getElementsByClassName('element').length > 1) ) {
 
         fail();
-        
+
     } else {
 
         automat.style.borderColor = "green";
@@ -202,8 +257,10 @@ async function automatisch() {
 
 function speichern() {
 
+    var tempDef = [q,eingabeAlphabet,kellerAlphabet,startZustand,anfangsSymbol,endzustand];
+
     localStorage.setItem('regeln', JSON.stringify(regeln));
-    localStorage.setItem('endzustand', endzustand);
+    localStorage.setItem('definition', JSON.stringify(tempDef));
 
     //console.log(localStorage.getItem('regeln'));
 
@@ -215,7 +272,14 @@ function speichern() {
 function laden() {
 
     regeln = JSON.parse(localStorage.getItem('regeln'));
-    endzustand = localStorage.getItem('endzustand');
+    var tempDef = JSON.parse(localStorage.getItem('definition'));
+
+    q = tempDef[0];
+    eingabeAlphabet = tempDef[1];
+    kellerAlphabet = tempDef[2];
+    startZustand = tempDef[3];
+    anfangsSymbol = tempDef[4];
+    endzustand = tempDef[5];
 
     for (var i = 0; i < regeln.length; i++) {
 
@@ -223,7 +287,7 @@ function laden() {
 
     }
 
-    alert('Regeln wurden geladen!');
+    definitionAktualisieren();
 
 }
 
@@ -270,6 +334,24 @@ function statusWechseln(x) {
         }
 
         status ^= true;
+
+    }
+
+}
+
+
+function pushElement(x) {
+
+    push = document.getElementById('push');
+
+    if (x.value != 'push') {
+
+        push.disabled = true;
+        push.value = '';
+
+    } else {
+
+        push.disabled = false;
 
     }
 
