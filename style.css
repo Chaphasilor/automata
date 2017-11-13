@@ -5,13 +5,28 @@
 html,body {
   margin: 0;
   padding: 0;
+  background-color: rgb(11, 11, 11);
+  color: white;
+}
+
+/*------------------------
+------VISUALISIERUNG------
+--------------------------*/
+
+#visualisierung {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80%;
+    height: 100%;
+    border-right: 3px solid white;
 }
 
 /*--------KELLER---------*/
 
 #keller {
   position: absolute;
-  bottom: 1%;
+  bottom: 2%;
   right: 5%;
   border: 4px solid grey;
   border-top: 0;
@@ -85,8 +100,8 @@ html,body {
   left: 1%;
   border: 3px solid grey;
   border-right: 3px dashed blue;
-  width: 86%;
-  height: 47px;
+  width: 80%;
+  height: 10%;
 }
 
 @keyframes input {
@@ -103,8 +118,8 @@ html,body {
 
 #band .element {
   float: right;
-  width: 35px;
-  height: 35px;
+  width: 7%;
+  height: 90%;
   margin: 3px;
   border: 3px solid red;
   animation: input 1s ease-in-out;
@@ -129,10 +144,10 @@ html,body {
 
 #automat {
     position: absolute;
-    top: 10%;
+    top: 13%;
     left: 1%;
-    width: 86%;
-    height: 50%;
+    width: 80%;
+    height: 85%;
     border: 5px solid orange;
 }
 
@@ -149,7 +164,7 @@ html,body {
     line-height: 2em;
     text-align: center;
     padding: 0;
-    border: 3px solid blue;
+    border: 3px solid rgb(0, 154, 127);
     border-radius: 50%;
 }
 
@@ -164,62 +179,132 @@ html,body {
     line-height: 1.5em;
     font-size: 1em;
     padding: 0;
-    border: 3px solid blue;
+    border: 3px solid rgb(0, 154, 127);
     border-radius: 50%;
 }
 
-/*----------Input----------*/
-
-#input {
+#automat h3 {
     position: absolute;
-    bottom: 25%;
-    left: 10%;
-    width: 70%;
-    height: 10%;
+    top: 0;
+    left: 0;
+    text-align: center;
+    width: 100%;
 }
 
 #regeln {
     position: absolute;
-    top: 10%;
-    left: 1%;
-    width: 15%;
+    top: 0;
+    right: 0;
+    width: 35%;
+    height: 100%;
+    border-left: 3px solid grey;
+    margin: 0;
+    padding-left: 3%;
+    padding-top: 1%;
 }
+
+#definition {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 35%;
+    height: 100%;
+    border-right: 3px solid grey;
+    margin: 0;
+    padding-left: 1%;
+    padding-top: 7%;
+    list-style-type: none;
+}
+
+
+/*------------------------
+---------STEUERUNG--------
+--------------------------*/
+
+#steuerung {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 20%;
+    height: 100%;
+    border-left: 3px solid white;
+}
+
+/*--------EINGABEN--------*/
+
+#input {
+    position: absolute;
+    top: 1%;
+    left: 10%;
+    width: 70%;
+    height: 10%;
+    text-align: center;
+}
+
+#input * {
+    margin-bottom: .5em;
+}
+
+#input #funktion {
+    height: 1.65em;
+}
+
+#input #push {
+    width: 50%;
+}
+
+#input #add {
+    width: 45%;
+}
+
+#trennung {
+    position: absolute;
+    top: 36%;
+    width: 100%;
+}
+
+/* ---------KNÖPFE-------- */
 
 #speichern {
     position: absolute;
-    bottom: 5%;
-    left: 1%;
+    bottom: 13%;
+    left: 15%;
+    width: 27%;
 }
 
 #laden {
     position: absolute;
-    bottom: 5%;
-    left: 7%;
+    bottom: 13%;
+    left: 48%;
+    width: 27%;
 }
 
 #reset {
     position: absolute;
-    bottom: 5%;
-    left: 11.5%;
+    bottom: 20%;
+    left: 15%;
+    width: 60%;
 }
 
 #bandEingabe {
     position: absolute;
-    bottom: 5%;
-    left: 18.5%;
+    bottom: 40%;
+    left: 5%;
 }
 
 #starten {
     position: absolute;
-    bottom: 5%;
-    left: 30%;
+    bottom: 40%;
+    left: 62%;
 }
 
 #status {
     position: absolute;
-    bottom: 5%;
-    right: 15%;
+    bottom: 55%;
+    left: 17%;
+    width: 55%;
     color: white;
+    font-weight: bold;
 }
 
 #status:disabled {

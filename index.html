@@ -13,61 +13,81 @@
   </head>
   <body>
 
-    <div id='keller'>
+    <div id='visualisierung'>
 
-      <div class='element'>
-        <div>#</div>
-      </div>
+        <div id='keller'>
 
-    </div>
+          <div class='element'>
+            <div>#</div>
+          </div>
+
+        </div>
 
 
-    <div id='band'></div>
+        <div id='band'></div>
 
-    <div id='automat'>
+        <div id='automat'>
 
-        <div>
-            0
+            <ul id='definition'></ul>
+
+            <div>
+                0
+            </div>
+
+            <ol id='regeln'></ol>
+
         </div>
 
     </div>
 
-    <form id='input'>
 
-        <input id="zustand" type="number" name="zustand" placeholder="Ausgangszustand" />
-        <input id="eingabe" type="text" maxlength="1" name="eingabe" placeholder="Eingabe" />
-        <input id="top" type="text" maxlength="1" name="top" placeholder="Oberstes Kellerelement" />
-        <span> --> </span>
-        <input id="zustand_neu" type="number" name="zustand_neu" placeholder="Neuer Zustand" />
-        <select id="funktion" name="funktion">
-            <option value="push">Push</option>
-            <option value="pop">Pop</option>
-            <option value="nop">Nop</option>
-        </select>
-        <input id="push" type="text" maxlength="1" name="push" placeholder="Zu pushendes Element" />
 
-        <br/>
-        <br/>
+    <div id='steuerung'>
 
-        <input type='button' value='Hinzufügen' onclick='neueRegel();' />
+        <div id='input'>
 
-    </form>
+            <h3>Neue Regel:</h3>
 
-    <ol id='regeln'></ol>
+            <input id="zustand" type="number" name="zustand" placeholder="Ausgangszustand" />
+            <br/>
+            <input id="eingabe" type="text" maxlength="1" name="eingabe" placeholder="Eingabe" />
+            <br/>
+            <input id="top" type="text" maxlength="1" name="top" placeholder="Oberstes Kellerelement" />
+            <br/>
+            <input id="zustand_neu" type="number" name="zustand_neu" placeholder="Neuer Zustand" />
+            <br/>
+            <select id="funktion" name="funktion" onchange="pushElement(this);">
+                <option value="push">Push</option>
+                <option value="pop">Pop</option>
+                <option value="nop">Nop</option>
+            </select>
+            <input id="push" type="text" maxlength="1" name="push" placeholder="Element" />
 
-    <button id='speichern' onclick="speichern();">Speichern</button>
-    <button id='laden' onclick="laden();">Laden</button>
-    <button id='reset' onclick="reset();">Reset</button>
-    <input id='bandEingabe' type='text' name='bandEingabe' placeholder='Bandeingabe' />
-    <input id='starten' type='button' value='Starten' onclick="automatisch();" />
+            <br/>
+          
+            <input id='add' type='button' value='Hinzufügen' onclick='neueRegel();' />
 
-    <button id='status' onclick="statusWechseln(this);" style="background-color:red;">Status ändern</button>
+        </div>
+
+        <hr id='trennung'/>
+
+        <button id='status' onclick="statusWechseln(this);" style="background-color:red;">Status ändern</button>
+
+        <input id='bandEingabe' type='text' name='bandEingabe' placeholder='Bandeingabe' />
+        <input id='starten' type='button' value='Starten' onclick="automatisch();" />
+
+        <button id='reset' onclick="reset();">Reset</button>
+        <button id='speichern' onclick="speichern();">Speichern</button>
+        <button id='laden' onclick="laden();">Laden</button>
+
+    </div>
 
     <script type="text/javascript">
 
         var keller = document.getElementById('keller');
         var band = document.getElementById('band');
         var automat = document.getElementById('automat');
+        var definition = document.getElementById('definition');
 
     </script>
 
