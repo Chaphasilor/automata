@@ -7,10 +7,11 @@ var regelFolge = [];
 var zustand = 0;
 var endzustand = 0;
 var status = 0;
-var btResult;
+var btResult = false;
 
-animationFertig = true;
-deterministisch = true;
+var animationFertig = true;
+var deterministisch = true;
+var fertig = true;
 
 
 function neueRegel() {
@@ -195,6 +196,8 @@ function fail() {
 
     console.log('FAILED');
 
+    fertig = true;
+
 }
 
 
@@ -203,10 +206,14 @@ function finish() {
     automat.style.borderColor = "green";
     automat.style.borderWidth = "10px";
 
+    fertig = true;
+
 }
 
 
 async function automatisch() {
+
+    fertig = false;
 
     input = document.getElementById('bandEingabe').value;
 
@@ -293,6 +300,8 @@ async function nichtDeterministisch(input, zeichen) {
             await sleep(2000);
 
         }
+
+        finish();
 
     } else {
 
@@ -526,27 +535,43 @@ function laden() {
 
 function reset() {
 
-    keller.innerHTML = "<div class='element'><div>#</div></div>";
-    band.innerHTML = "";
-    document.getElementById('regeln').innerHTML = "";
+    if (fertig == true) {
 
-    automat.getElementsByTagName('div')[0].innerHTML = "0";
+        keller.innerHTML = "<div class='element'><div>#</div></div>";
+        band.innerHTML = "";
+        document.getElementById('regeln').innerHTML = "";
 
-    automat.style.borderColor = "orange";
-    automat.style.borderWidth = "5px";
+        automat.getElementsByTagName('div')[0].innerHTML = "0";
 
-    document.getElementById('input').reset();
+        automat.style.borderColor = "orange";
+        automat.style.borderWidth = "5px";
 
-    document.getElementById('status').disabled = false;
+        document.getElementById('input').reset();
+        document.getElementById('bandEingabe').value = "";
 
-    if (status == 1) {
+        document.getElementById('status').disabled = false;
 
-        statusWechseln(document.getElementById('status'));
+        if (status == 1) {
+
+            statusWechseln(document.getElementById('status'));
+
+        }
+
+        regeln = [];
+        entscheidungen = [];
+        backtrackKeller = ['#'];
+        regelFolge = [];
+        zustand = 0;
+        endzustand = 0;
+        btResult = false;
+        animationFertig = true;
+        deterministisch = true;
+
+    } else {
+
+        alert('Der Automat läuft noch!');
 
     }
-
-    regeln = [];
-    zustand = 0;
 
 }
 
