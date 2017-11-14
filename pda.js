@@ -248,10 +248,11 @@ function fail() {
     automat.style.borderWidth = "10px";
     automat.getElementsByTagName('div')[0].innerHTML = "F";
 
-    statusWechseln(document.getElementById('status'));
+    if (status = 1) {
+        statusWechseln(document.getElementById('status'));
+    }
 
     document.getElementById('status').disabled = true;
-
     console.log('FAILED');
 
     fertig = true;
