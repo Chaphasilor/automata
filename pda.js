@@ -273,6 +273,49 @@ function finish() {
 }
 
 
+function testenUndFinden(typ, erfolge) {
+
+    var input;
+    var l = 1;
+
+    if (typ == 'nd') {
+
+        btResult = false;
+
+        while (erfolge > 0) {
+
+            input = ""
+
+            for (var i = 0; i < l; i++) {
+
+                input += eingabeAlphabet[0];
+
+            }
+
+            backtrack(input, 0)
+
+            if (btResult == true) {
+
+                console.log('ERKANNTES WORT: '+input);
+
+            }
+
+            l++;
+
+        }
+
+
+    } else if (typ == 'd') {
+
+    } else {
+
+        alert('Kein Typ angegeben');
+
+    }
+
+}
+
+
 async function automatisch() {
 
     fertig = false;
