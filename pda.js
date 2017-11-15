@@ -83,88 +83,92 @@ function neueRegel() {
 }
 
 
-document.addEventListener("keypress", function() {eingabeVerarbeiten(String.fromCharCode(event.keyCode).toLowerCase());});
+document.addEventListener("keypress", function(event) {
+
+        var x = event.keyCode || event.charCode; // I HATE Firefox :(...
+        eingabeVerarbeiten(String.fromCharCode(x).toLowerCase());
+
+    }
+);
 
 
 function eingabeVerarbeiten(key) {
 
-        if (status == 1 && animationFertig == true && regeln.length>0) {
+    if (status == 1 && animationFertig == true && regeln.length>0) {
 
-            if (deterministisch == true) {
+        if (deterministisch) {
 
-                for (var i = 0; i < document.getElementById('regeln').getElementsByTagName('li').length; i++) {
-                    document.getElementById('regeln').getElementsByTagName('li')[i].style.backgroundColor = "rgb(0, 0, 0)";
-                }
+            for (var i = 0; i < document.getElementById('regeln').getElementsByTagName('li').length; i++) {
+                document.getElementById('regeln').getElementsByTagName('li')[i].style.backgroundColor = "rgb(0, 0, 0)";
+            }
 
-                add(key);
+            add(key);
 
-                var n = 0;
-                var m = regeln.length;
-                var executed = false;
+            var n = 0;
+            var m = regeln.length;
+            var executed = false;
 
-                while (!executed && n<m) {
+            while (!executed && n<m) {
 
-                    if (regeln[n][1] == key) {
+                if (regeln[n][1] == key) {
 
-                        if (regeln[n][0] == zustand) {
+                    if (regeln[n][0] == zustand) {
 
-                            if (regeln[n][2] == keller.getElementsByTagName('div')[0].getElementsByTagName('div')[0].innerHTML) {
+                        if (regeln[n][2] == keller.getElementsByTagName('div')[0].getElementsByTagName('div')[0].innerHTML) {
 
-                                switch (regeln[n][4]) {
-                                    case "push":
+                            switch (regeln[n][4]) {
+                                case "push":
 
-                                        push(n);
+                                    pushElement(n);
 
-                                        break;
-                                    case "pop":
+                                    break;
+                                case "pop":
 
-                                        pop();
+                                    pop();
 
-                                        break;
-                                    case "nop":
+                                    break;
+                                case "nop":
 
-                                        break;
-                                    default:
-                                        alert('Ein Fehler ist aufgetreten!');
-
-                                }
-
-                                zustand = regeln[n][3];
-
-                                if (zustand == endzustand) {
-
-                                    automat.getElementsByTagName('div')[0].innerHTML = "<div>"+zustand+"</div>";
-
-                                } else {
-
-                                    automat.getElementsByTagName('div')[0].innerHTML = zustand;
-
-                                }
-
-                                document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "green";
-
-
-                                executed = true;
+                                    break;
+                                default:
+                                    alert('Ein Fehler ist aufgetreten!');
 
                             }
+
+                            zustand = regeln[n][3];
+
+                            if (zustand == endzustand) {
+
+                                automat.getElementsByTagName('div')[0].innerHTML = "<div>"+zustand+"</div>";
+
+                            } else {
+
+                                automat.getElementsByTagName('div')[0].innerHTML = zustand;
+
+                            }
+
+                            document.getElementById('regeln').getElementsByTagName('li')[n].style.backgroundColor = "green";
+
+
+                            executed = true;
 
                         }
 
                     }
 
-                    n++;
-
                 }
 
-                if (executed == false) {
-
-                    fail();
-
-                }
+                n++;
 
             }
 
-        else {
+            if (executed == false) {
+
+                fail();
+
+            }
+
+        } else {
 
             window.alert("Dynamische Eingabe ist nur bei deterministischen Automaten möglich!");
 
@@ -177,7 +181,7 @@ function eingabeVerarbeiten(key) {
 }
 
 
-function push(n) {
+function pushElement(n) {
 
     var element = document.createElement("div");
     element.className = "element";
@@ -330,7 +334,7 @@ async function nichtDeterministisch(input, zeichen) {
             switch (regeln[regelFolge[i]][4]) {
                 case "push":
 
-                    push(regelFolge[i]);
+                    pushElement(regelFolge[i]);
 
                     break;
                 case "pop":
@@ -673,7 +677,7 @@ function statusWechseln(x) {
 }
 
 
-function pushElement(x) {
+function pushEingabe(x) {
 
     push = document.getElementById('push');
 
