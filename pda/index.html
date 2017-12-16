@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta charset="utf-8">
+
+    <link rel='stylesheet' type='text/css' href='style.css'>
+
+    <script src='pda.js'></script>
+
+    <title>Kellerautomat</title>
+
+  </head>
+  <body>
+
+    <div id='visualisierung'>
+
+        <div id='keller'>
+
+          <div class='element'>
+            <div>#</div>
+          </div>
+
+        </div>
+
+
+        <div id='band'></div>
+
+        <div id='automat'>
+
+            <ul id='definition'></ul>
+
+            <div>
+                0
+            </div>
+
+            <ol id='regeln'></ol>
+
+        </div>
+
+    </div>
+
+
+
+    <div id='steuerung'>
+
+        <form id='input'>
+
+            <h3>Neue Regel:</h3>
+
+            <input id="zustand" type="number" name="zustand" placeholder="Ausgangszustand" />
+            <br/>
+            <input id="eingabe" type="text" maxlength="1" name="eingabe" placeholder="Eingabe" />
+            <br/>
+            <input id="top" type="text" maxlength="1" name="top" placeholder="Oberstes Kellerelement" />
+            <br/>
+            <input id="zustand_neu" type="number" name="zustand_neu" placeholder="Neuer Zustand" />
+            <br/>
+            <select id="funktion" name="funktion" onchange="pushEingabe(this);">
+                <option value="push">Push</option>
+                <option value="pop">Pop</option>
+                <option value="nop">Nop</option>
+            </select>
+            <input id="push" type="text" maxlength="1" name="push" placeholder="Element" />
+
+            <br/>
+
+            <input id='add' type='button' value='Hinzufügen' onclick='neueRegel();' />
+
+        </form>
+
+        <hr id='trennung'/>
+
+        <button id='status' onclick="statusWechseln(this);" style="background-color:red;">Dynamische Eingabe</button>
+
+        <input id='bandEingabe' type='text' name='bandEingabe' placeholder='Bandeingabe' />
+        <input id='starten' type='button' value='Starten' onclick="automatisch();" />
+
+        <button id='reset' onclick="reset();">Reset</button>
+        <button id='speichern' onclick="speichern();">Speichern</button>
+        <button id='laden' onclick="laden();">Laden</button>
+
+    </div>
+
+    <script type="text/javascript">
+
+        var keller = document.getElementById('keller');
+        var band = document.getElementById('band');
+        var automat = document.getElementById('automat');
+        var definition = document.getElementById('definition');
+
+    </script>
+
+  </body>
+</html>
