@@ -4,25 +4,34 @@
 
     <meta charset="utf-8">
 
+    <link rel='stylesheet' type='text/css' href='style.css' />
+    <script type='text/javascript' src='tm.js'></script>
+
     <title>Turingmachine</title>
 
-    <script type='text/javascript' src='tm.js'></script>
 
   </head>
   <body>
 
-    <div id='output'>
+    <div id='tape'>
 
     </div>
 
-    <button type='button'>Starten</button>
+    <br/>
 
+    <input id='input' type='text' />
 
-    <form id='input'>
+    <button type='button' onclick="start();">Starten</button>
+
+    <br/>
+    <br/>
+    <br/>
+
+    <form id='config'>
 
       <textarea id='rules'></textarea>
 
-      <input type='button' value='Laden' onclick="load();" />
+      <input type='button' value='Laden' onclick="loadRules();" />
 
     </form>
 
