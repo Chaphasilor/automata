@@ -1,7 +1,7 @@
 var rules = [];
-var tape = "##########";
+var tape = "";
 var loadSuccessful;
-var tapePos = 5;
+var tapePos = 0;
 var state = -1;
 var endstate = 20;
 
@@ -122,6 +122,7 @@ function formatInput(input) {
 
       }
 
+      console.log(startPos+", "+(endPos-startPos));
       input = spliceString(input, startPos, endPos-startPos);
 
     }
@@ -152,7 +153,7 @@ async function start() {
 
   var input = document.getElementById('input').value;
 
-  tape = spliceString(tape,5,-1,input);
+  tape = spliceString(tape,tapePos,-1,input);
 
   process();
 
@@ -170,6 +171,16 @@ async function process() {
 
       executed = false;
       n = 0;
+
+      if (tapePos < 0) {
+
+        tape = "#"+tape;
+        tapePos++;
+        console.log("adding a symbol");
+
+      } else if (tapePos > tape.length-1) {
+        tape = tape+"#";
+      }
 
       while (!executed && n<m) {
 
