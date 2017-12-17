@@ -45,7 +45,14 @@ function load() {
               break;
             }
             if (spot == 4) {
-              rule[spot] = ta[i];
+
+              if ( (ta[i]=="L") || (ta[i]=="R") || (ta[i]=="N") ) {
+                rule[spot] = ta[i];
+              } else {
+                loadFailed(line);
+                break;
+              }
+
             } else {
               stateString += ta[i];
             }
