@@ -5,14 +5,12 @@ function load() {
 
   rules = [];
   loadSuccessful = true;
-  var ta = document.getElementById('rules').value;
+  var ta = formatInput(document.getElementById('rules').value);
   var rule = [];
   var spot = 0;
   var line = 1;
   var preSymbol = 2;
   var stateString = "";
-
-  ta = ta.replace(/(\r\n|\n)/gm, "~")+"~";
 
   for (var i = 0; i < ta.length; i++) {
 
@@ -69,7 +67,7 @@ function load() {
           preSymbol = 2;
           line++;
 
-        } else if (spot == 0) {
+        } else if ( (spot == 0) && (stateString=="") ) {
 
           console.log("Line "+line+":");
           console.log("Line empty!");
@@ -89,6 +87,43 @@ function load() {
     }
 
   }
+
+}
+
+function formatInput(input) {
+
+  input = input.replace(/(\r\n|\n)/gm, "~")+"~";
+  input = input.replace(/ /gm,'');
+
+  for (var i = 0; i < input.length; i++) {
+
+    if (input[i] == "/" && input[i+1] == "/") {
+
+      var startPos = i;
+      var endPos;
+
+      while (input[i] != "~") {
+
+        endPos = i;
+        i++;
+
+      }
+
+      input = spliceString(input, startPos, endPos-startPos);
+
+    }
+
+  }
+
+  console.log(input);
+
+  return input;
+
+}
+
+function spliceString(str, index, count) {
+
+  return str.slice(0, index) + str.slice(index + count+1);
 
 }
 
