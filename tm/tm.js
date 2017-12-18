@@ -7,6 +7,8 @@ var startState = "";
 var endstate = [];
 var isLoading = 0;
 var failed = false;
+var path = [];
+var input;
 
 function loadRules() {
 
@@ -81,7 +83,7 @@ function loadRules() {
                 preSymbol = 2;
               } else {
                 loadFailed(line);
-                break;                
+                break;
               }
               i++;
             }
@@ -212,10 +214,11 @@ function loadFailed(line) {
 
 async function start() {
 
-  var input = document.getElementById('input').value;
+  input = document.getElementById('input').value;
   tapePos = 1;
   state = startState;
   failed = false;
+  path = [];
 
   document.getElementById('tape').innerHTML = "";
   tape = spliceString("##",tapePos,-1,input);
@@ -257,6 +260,9 @@ async function process() {
 
     if (!failed) {
       document.getElementById('tape').innerHTML = tape;
+      console.log("Finished!");
+      tape = "#"+input+"#";
+      tapePos = 1;
     }
 
     loading();
@@ -309,6 +315,7 @@ async function computeStep(n, m) {
         }
 
         executed = true;
+        path.push(n);
 
         console.log(tape);
         console.log("state: "+state+" endstate: "+endstate);
@@ -330,24 +337,91 @@ async function computeStep(n, m) {
 
 }
 
+async function replay() {
+
+  if (path.length <= 0) {
+
+    window.alert("The machine has already halted!\nTo replay again, you'll have to run your input once again.");
+
+  }
+
+  while (path.length > 0) {
+
+    applyRule(rules[path[0]]);
+
+    await sleep(500);
+
+  }
+
+}
+
+function stepper() {
+
+  if (path.length > 0) {
+
+    applyRule(rules[path[0]]);
+
+  } else {
+    window.alert("The machine has already halted!");
+  }
+
+}
+
+function applyRule(rule) {
+
+  if (tapePos < 0) {
+
+    tape = "#"+tape;
+    tapePos++;
+    console.log("adding a symbol");
+
+  } else if (tapePos > tape.length-1) {
+    tape = tape+"#";
+  }
+
+  tape = spliceString(tape, tapePos, 0, rule[3]);
+  state = rule[2];
+
+  switch (rule[4]) {
+    case "L":
+      tapePos--;
+      break;
+    case "R":
+      tapePos++;
+      break;
+    default:
+
+  }
+
+  path.shift();
+
+  document.getElementById('tape').innerHTML = tape;
+
+}
+
 function loading() {
 
   var spinner = document.getElementById('loading').getElementsByClassName('spinner');
+  var buttons = document.getElementsByTagName('button');
 
   if (!isLoading) {
 
     for (var i = 0; i < spinner.length; i++) {
-
       spinner[i].className += " loading";
+    }
 
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].disabled = true;
     }
 
   } else {
 
     for (var i = 0; i < spinner.length; i++) {
-
       spinner[i].className = spinner[i].className.slice(0,7);
+    }
 
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].disabled = false;
     }
 
   }

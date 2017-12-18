@@ -40,9 +40,84 @@
 
       <textarea id='rules'></textarea>
 
-      <input type='button' value='Laden' onclick="loadRules();" />
+      <button type='button' onclick="loadRules();">Laden</button>
 
     </form>
+
+    <button type='button' onclick="replay();">Animieren</button>
+    <button type='button' onclick="stepper();">Schritt</button>
+
+    <br/>
+    <br/>
+    <br/>
+
+    <textarea name="example" rows="15" cols="80">
+//Author: Gabriel Alvarez
+// Simulator: https://turingmachinesimulator.com
+// Initial state: qinit
+// Accepting state: qfin
+// Whole alphabet: 0,1,o,i
+
+// Comments: We duplicate the size of
+// a binary string by concatenating
+// the string to its mirror image.
+// i/o will be used as "markers" for
+// the squares with 1's and 0's
+// (respectively).
+
+?qinit
+!qfin
+
+qinit,0>qinit,0,R
+
+qinit,1>qinit,1,R
+
+qinit,o>qinit,0,R
+
+qinit,i>qinit,1,R
+
+qinit,#>copying#from#right#to#left,#,L
+
+copying#from#right#to#left,0>copying#0#to#the#right,o,R
+
+copying#from#right#to#left,1>copying#1#to#the#right,i,R
+
+copying#from#right#to#left,o>copying#from#right#to#left,o,L
+
+copying#from#right#to#left,i>copying#from#right#to#left,i,L
+
+copying#0#to#the#right,#>copying#from#right#to#left,o,L
+
+copying#1#to#the#right,#>copying#from#right#to#left,i,L
+
+copying#0#to#the#right,0>copying#0#to#the#right,0,R
+
+copying#0#to#the#right,1>copying#0#to#the#right,1,R
+
+copying#0#to#the#right,o>copying#0#to#the#right,o,R
+
+copying#0#to#the#right,i>copying#0#to#the#right,i,R
+
+copying#1#to#the#right,0>copying#1#to#the#right,0,R
+
+copying#1#to#the#right,1>copying#1#to#the#right,1,R
+
+copying#1#to#the#right,o>copying#1#to#the#right,o,R
+
+copying#1#to#the#right,i>copying#1#to#the#right,i,R
+
+copying#from#right#to#left,#>removing#the#markers,#,R
+
+removing#the#markers,o>removing#the#markers,0,R
+
+removing#the#markers,i>removing#the#markers,1,R
+
+removing#the#markers,0>removing#the#markers,0,L
+
+removing#the#markers,1>removing#the#markers,1,L
+
+removing#the#markers,#>qfin,#,R
+    </textarea>
 
   </body>
 </html>
