@@ -1,9 +1,46 @@
 #tape {
-  width: 300px;
+  width: 50%;
   height: 2em;
   line-height: 2em;
   font-size: 1.5em;
   text-align: center;
   font-family: monospace;
+  overflow-x: scroll;
+  overflow-y: hidden;
   border: 3px solid grey;
+}
+
+@keyframes loading {
+  0% {transform: translateX(-50%) rotate(0deg);}
+  /* 50% {transform: translateX(-50%) rotate(360deg);} */
+  100% {transform: translateX(-50%) rotate(360deg);}
+}
+
+.spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 5%;
+  height: 1em;
+  transform: translateX(-50%);
+}
+
+.spinner.loading:first-of-type {animation: loading .75s linear 0s infinite;}
+.spinner.loading:nth-of-type(2) {animation: loading .75s linear .25s infinite;}
+.spinner.loading:nth-of-type(3) {animation: loading .75s linear .5s infinite;}
+
+.spinner div {
+  opacity: 0;
+  transition: opacity .5s;
+}
+
+.spinner div.red {background-color: red;}
+.spinner div.green {background-color: green;}
+.spinner div.blue {background-color: blue;}
+
+.spinner.loading div {
+  opacity: 1;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
 }

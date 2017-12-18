@@ -1,13 +1,18 @@
 var rules = [];
-var tape = "";
+var tape;
 var loadSuccessful;
-var tapePos = 0;
-var state = -1;
-var endstate = 20;
+var tapePos = 1;
+var state;
+var startState = "";
+var endstate = [];
+var isLoading = 0;
+var failed = false;
 
 function loadRules() {
 
   rules = [];
+  startState = "";
+  endstate = [];
   loadSuccessful = true;
   var ta = formatInput(document.getElementById('rules').value);
   var rule = [];
@@ -15,6 +20,7 @@ function loadRules() {
   var line = 1;
   var preSymbol = 2;
   var stateString = "";
+  var endstateTemp = "";
 
   for (var i = 0; i < ta.length; i++) {
 
@@ -41,6 +47,50 @@ function loadRules() {
               loadFailed(line);
             }
             preSymbol = 1;
+            break;
+
+          case "?":
+            i++;
+            while (ta[i] != "~") {
+              if ( (ta[i]!=",") && (ta[i]!=">") ) {
+
+                startState += ta[i];
+                i++;
+
+              } else {
+                loadFailed(line);
+                break;
+              }
+            }
+            line++;
+            preSymbol = 2;
+            spot = -2;
+            break;
+
+          case "!":
+            i++;
+            while (ta[i] != "~") {
+              if (ta[i] == ",") {
+
+                endstate.push(endstateTemp);
+                endstateTemp = "";
+                preSymbol = 3;
+
+              } else if (ta[i] != ">") {
+                endstateTemp += ta[i];
+                preSymbol = 2;
+              } else {
+                loadFailed(line);
+                break;                
+              }
+              i++;
+            }
+            if (preSymbol != 3) {
+              endstate.push(endstateTemp);
+            }
+            i--;
+            preSymbol = 2;
+            spot++;
             break;
 
           default:
@@ -89,6 +139,15 @@ function loadRules() {
           line++;
           rule = [];
 
+        } else if (spot == -1) {
+
+          console.log("Loaded start and end state!");
+
+          spot = 0;
+          preSymbol = 2;
+          line++;
+          rule = [];
+
         } else {
 
           loadFailed(line);
@@ -125,6 +184,8 @@ function formatInput(input) {
       console.log(startPos+", "+(endPos-startPos));
       input = spliceString(input, startPos, endPos-startPos);
 
+      i = startPos;
+
     }
 
   }
@@ -152,8 +213,12 @@ function loadFailed(line) {
 async function start() {
 
   var input = document.getElementById('input').value;
+  tapePos = 1;
+  state = startState;
+  failed = false;
 
-  tape = spliceString(tape,tapePos,-1,input);
+  document.getElementById('tape').innerHTML = "";
+  tape = spliceString("##",tapePos,-1,input);
 
   process();
 
@@ -165,76 +230,129 @@ async function process() {
 
     var n;
     var m = rules.length;
-    var executed;
+    var timeToWait = 3;
+    var finished = false;
 
-    while (state != endstate) {
+    loading();
 
-      executed = false;
-      n = 0;
+    while ( (!finished) && (!failed) ) {
 
-      if (tapePos < 0) {
-
-        tape = "#"+tape;
-        tapePos++;
-        console.log("adding a symbol");
-
-      } else if (tapePos > tape.length-1) {
-        tape = tape+"#";
+      if (timeToWait == 3) {
+        await sleep(1);
+        timeToWait = 0;
       }
 
-      while (!executed && n<m) {
+      computeStep(n, m);
 
-        console.log(n);
+      timeToWait++;
 
-        console.log(rules[n][1] + " ?= " + tape.charAt(tapePos) + " ("+n+")");
+      for (var i = 0; i < endstate.length; i++) {
+        if (endstate[i] == state) {
+          // console.log("test");
+          finished = true;
+        }
+      }
 
-        if (rules[n][1] == tape.charAt(tapePos)) {
+    }
 
-          console.log("Rule matches tape " + tape.charAt(tapePos));
+    if (!failed) {
+      document.getElementById('tape').innerHTML = tape;
+    }
 
-          if (rules[n][0] == state) {
+    loading();
 
-            console.log("Rule matches state " + tape.charAt(tapePos));
+  }
 
-            tape = spliceString(tape, tapePos, 0, rules[n][3]);
-            state = rules[n][2];
+}
 
-            switch (rules[n][4]) {
-              case "L":
-                tapePos--;
-                break;
-              case "R":
-                tapePos++;
-                break;
-              default:
+async function computeStep(n, m) {
 
-            }
+  var executed = false;
+  n = 0;
 
-            executed = true;
+  if (tapePos < 0) {
 
-            console.log(tape);
-            console.log("state: "+state+" endstate: "+endstate);
-            console.log(tapePos);
+    tape = "#"+tape;
+    tapePos++;
+    console.log("adding a symbol");
 
-          }
+  } else if (tapePos > tape.length-1) {
+    tape = tape+"#";
+  }
+
+  while (!executed && n<m) {
+
+    console.log(state);
+
+    console.log(rules[n][1] + " ?= " + tape.charAt(tapePos) + " ("+n+")");
+
+    if (rules[n][1] == tape.charAt(tapePos)) {
+
+      console.log("Rule matches tape " + tape.charAt(tapePos));
+
+      if (rules[n][0] == state) {
+
+        console.log("Rule matches state " + tape.charAt(tapePos));
+
+        tape = spliceString(tape, tapePos, 0, rules[n][3]);
+        state = rules[n][2];
+
+        switch (rules[n][4]) {
+          case "L":
+            tapePos--;
+            break;
+          case "R":
+            tapePos++;
+            break;
+          default:
 
         }
 
-        n++;
+        executed = true;
 
-      }
-
-      if (executed == false) {
-
-          fail();
+        console.log(tape);
+        console.log("state: "+state+" endstate: "+endstate);
+        console.log(tapePos);
 
       }
 
     }
 
-    document.getElementById('tape').innerHTML = tape;
+    n++;
 
   }
+
+  if (executed == false) {
+
+      fail();
+
+  }
+
+}
+
+function loading() {
+
+  var spinner = document.getElementById('loading').getElementsByClassName('spinner');
+
+  if (!isLoading) {
+
+    for (var i = 0; i < spinner.length; i++) {
+
+      spinner[i].className += " loading";
+
+    }
+
+  } else {
+
+    for (var i = 0; i < spinner.length; i++) {
+
+      spinner[i].className = spinner[i].className.slice(0,7);
+
+    }
+
+  }
+
+  isLoading ^= true;
 
 }
 
@@ -242,4 +360,10 @@ function fail() {
 
   window.alert("FAILED!");
 
+  failed = true;
+
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
