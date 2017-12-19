@@ -26,32 +26,34 @@
 
     </div>
 
-    <br/>
-
-    <input id='input' type='text' />
-
-    <button type='button' onclick="start();">Starten</button>
-
-    <br/>
-    <br/>
-    <br/>
-
-    <form id='config'>
+    <form id='controls'>
 
       <textarea id='rules'></textarea>
 
-      <button type='button' onclick="loadRules();">Laden</button>
+      <input id='input' type='text' />
+
+      <div id='buttons'>
+        <button id='start' type='button' onclick="startMachine();">Starten</button>
+        <button id='load' type='button' onclick="loadRules();">Laden</button>
+        <button id='replay' type='button' onclick="replaySolution();">Animieren</button>
+        <button id='step' type='button' onclick="stepper();">Schritt</button>
+      </div>
 
     </form>
 
-    <button type='button' onclick="replay();">Animieren</button>
-    <button type='button' onclick="stepper();">Schritt</button>
+    <script>
 
-    <br/>
-    <br/>
-    <br/>
+      document.getElementById('rules').addEventListener("paste", function() {showElement(window.document.getElementById('load'));});
+      document.getElementById('rules').addEventListener("input", function() {showElement(window.document.getElementById('load'));});
 
-    <textarea name="example" rows="15" cols="80">
+      document.getElementById('step').addEventListener("click", function() {
+        var topLeft = document.getElementById('highlight').offsetLeft;
+        document.getElementById('tape').scrollLeft = topLeft;
+      });
+
+    </script>
+
+    <!-- <textarea name="example" rows="15" cols="80">
 //Author: Gabriel Alvarez
 // Simulator: https://turingmachinesimulator.com
 // Initial state: qinit
@@ -117,7 +119,7 @@ removing#the#markers,0>removing#the#markers,0,L
 removing#the#markers,1>removing#the#markers,1,L
 
 removing#the#markers,#>qfin,#,R
-    </textarea>
+    </textarea> -->
 
   </body>
 </html>

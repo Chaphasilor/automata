@@ -9,6 +9,8 @@ var isLoading = 0;
 var failed = false;
 var path = [];
 var input;
+var changedRules = 1;
+
 
 function loadRules() {
 
@@ -118,7 +120,7 @@ function loadRules() {
 
       } else {
 
-        if (spot == 4) {
+        if ( (spot == 4) && (rule.length == 5) ) {
 
           rules.push(rule);
 
@@ -160,6 +162,11 @@ function loadRules() {
 
     }
 
+  }
+
+  if (loadSuccessful) {
+    window.alert("Regeln wurden geladen!");
+    hideElement(document.getElementById('load'));
   }
 
 }
@@ -212,7 +219,7 @@ function loadFailed(line) {
 
 }
 
-async function start() {
+async function startMachine() {
 
   input = document.getElementById('input').value;
   tapePos = 1;
@@ -337,7 +344,7 @@ async function computeStep(n, m) {
 
 }
 
-async function replay() {
+async function replaySolution() {
 
   if (path.length <= 0) {
 
@@ -349,7 +356,7 @@ async function replay() {
 
     applyRule(rules[path[0]]);
 
-    await sleep(500);
+    await sleep(100);
 
   }
 
@@ -375,7 +382,7 @@ function applyRule(rule) {
     tapePos++;
     console.log("adding a symbol");
 
-  } else if (tapePos > tape.length-1) {
+  } else if (tapePos > tape.length-2) {
     tape = tape+"#";
   }
 
@@ -395,14 +402,15 @@ function applyRule(rule) {
 
   path.shift();
 
-  document.getElementById('tape').innerHTML = tape;
+  document.getElementById('tape').innerHTML = spliceString(tape,tapePos,0,"<span id='highlight'>"+tape.charAt(tapePos)+"</span>");
+  document.getElementById('tape').scrollLeft = document.getElementById('highlight').offsetLeft;
 
 }
 
 function loading() {
 
   var spinner = document.getElementById('loading').getElementsByClassName('spinner');
-  var buttons = document.getElementsByTagName('button');
+  var buttons = document.getElementById('controls').getElementsByTagName('button');
 
   if (!isLoading) {
 
@@ -428,6 +436,14 @@ function loading() {
 
   isLoading ^= true;
 
+}
+
+function hideElement(element) {
+  element.style.display = "none";
+}
+
+function showElement(element) {
+  element.style.display = "block";
 }
 
 function fail() {
