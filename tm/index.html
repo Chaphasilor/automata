@@ -4,27 +4,154 @@
 
     <meta charset="utf-8">
 
+    <link rel='stylesheet' type='text/css' href='style.css' />
+    <script type='text/javascript' src='tm.js'></script>
+
     <title>Turingmachine</title>
 
-    <script type='text/javascript' src='tm.js'></script>
 
   </head>
   <body>
 
-    <div id='output'>
+    <!-- <hr style='position:fixed;top:50%;left:0;width:100%;' />
+    <hr style='position:fixed;top:50%;left:0;transform:rotate(-90deg);width:100%' /> -->
+
+    <div id='loading'>
+      <div class='spinner'><div class='red'></div></div>
+      <div class='spinner'><div class='green'></div></div>
+      <div class='spinner'><div class='blue'></div></div>
+    </div>
+
+    <div id='automaton'>
+
+      <ul id='definition'></ul>
+
+      <div id='state'></div>
+
+      <div id='tape'></div>
+
+      <div id='stepcounter'>Steps: <span id='counter'></span></div>
 
     </div>
 
-    <button type='button'>Starten</button>
+    <form id='controls'>
 
+      <input id='input' type='text' placeholder='Input' />
 
-    <form id='input'>
+      <textarea id='rules' placeholder='Rules'></textarea>
 
-      <textarea id='rules'></textarea>
-
-      <input type='button' value='Laden' onclick="load();" />
+      <div id='buttons'>
+        <button id='start' type='button' onclick="startMachine();">Process</button>
+        <button id='load' type='button' onclick="loadRules();">Load</button>
+        <button id='play' type='button' onclick="replay();">Play</button>
+        <button id='step' type='button' onclick="stepper();">Step</button>
+        <button id='speed' type='button' onclick="setSpeed();">Set Speed</button>
+      </div>
 
     </form>
+
+    <script>
+
+      document.getElementById('rules').addEventListener("paste", function() {
+        showElement(window.document.getElementById('load'));
+        hideElement(window.document.getElementById('start'));
+        hideElement(window.document.getElementById('play'));
+        hideElement(window.document.getElementById('step'));
+      });
+      document.getElementById('rules').addEventListener("input", function() {
+        showElement(window.document.getElementById('load'));
+        hideElement(window.document.getElementById('start'));
+        hideElement(window.document.getElementById('play'));
+        hideElement(window.document.getElementById('step'));
+      });
+
+      document.getElementById('input').addEventListener("paste", function() {
+        showElement(window.document.getElementById('start'));
+        hideElement(window.document.getElementById('load'));
+        hideElement(window.document.getElementById('play'));
+        hideElement(window.document.getElementById('step'));
+      });
+      document.getElementById('input').addEventListener("input", function() {
+        showElement(window.document.getElementById('start'));
+        hideElement(window.document.getElementById('load'));
+        hideElement(window.document.getElementById('play'));
+        hideElement(window.document.getElementById('step'));
+      });
+
+      hideElement(document.getElementById('start'));
+      hideElement(document.getElementById('play'));
+      hideElement(document.getElementById('step'));
+      hideElement(document.getElementById('speed'));
+
+    </script>
+
+    <!-- <textarea name="example" rows="15" cols="80">
+//Author: Gabriel Alvarez
+// Simulator: https://turingmachinesimulator.com
+// Initial state: qinit
+// Accepting state: qfin
+// Whole alphabet: 0,1,o,i
+
+// Comments: We duplicate the size of
+// a binary string by concatenating
+// the string to its mirror image.
+// i/o will be used as "markers" for
+// the squares with 1's and 0's
+// (respectively).
+
+?qinit
+!qfin
+
+qinit,0>qinit,0,R
+
+qinit,1>qinit,1,R
+
+qinit,o>qinit,0,R
+
+qinit,i>qinit,1,R
+
+qinit,#>copying#from#right#to#left,#,L
+
+copying#from#right#to#left,0>copying#0#to#the#right,o,R
+
+copying#from#right#to#left,1>copying#1#to#the#right,i,R
+
+copying#from#right#to#left,o>copying#from#right#to#left,o,L
+
+copying#from#right#to#left,i>copying#from#right#to#left,i,L
+
+copying#0#to#the#right,#>copying#from#right#to#left,o,L
+
+copying#1#to#the#right,#>copying#from#right#to#left,i,L
+
+copying#0#to#the#right,0>copying#0#to#the#right,0,R
+
+copying#0#to#the#right,1>copying#0#to#the#right,1,R
+
+copying#0#to#the#right,o>copying#0#to#the#right,o,R
+
+copying#0#to#the#right,i>copying#0#to#the#right,i,R
+
+copying#1#to#the#right,0>copying#1#to#the#right,0,R
+
+copying#1#to#the#right,1>copying#1#to#the#right,1,R
+
+copying#1#to#the#right,o>copying#1#to#the#right,o,R
+
+copying#1#to#the#right,i>copying#1#to#the#right,i,R
+
+copying#from#right#to#left,#>removing#the#markers,#,R
+
+removing#the#markers,o>removing#the#markers,0,R
+
+removing#the#markers,i>removing#the#markers,1,R
+
+removing#the#markers,0>removing#the#markers,0,L
+
+removing#the#markers,1>removing#the#markers,1,L
+
+removing#the#markers,#>qfin,#,R
+    </textarea> -->
 
   </body>
 </html>
