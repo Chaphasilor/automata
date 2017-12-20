@@ -117,8 +117,8 @@ button:disabled {
 #controls #buttons {
   position: absolute;
   bottom: 3%;
-  left: 25%;
-  width: 50%;
+  left: 10%;
+  width: 80%;
   display: flex;
   flex-direction: row;
   direction: ltr;
