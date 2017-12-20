@@ -10,6 +10,9 @@ var failed = false;
 var path = [];
 var input;
 var changedRules = 1;
+var stepcounter = 0;
+var playing = 0;
+var speed = 300;
 
 
 function loadRules() {
@@ -165,8 +168,14 @@ function loadRules() {
   }
 
   if (loadSuccessful) {
-    window.alert("Regeln wurden geladen!");
+    displayMessage("Rules loaded successfully!");
+    showElement(document.getElementById('start'));
     hideElement(document.getElementById('load'));
+    hideElement(document.getElementById('play'));
+    hideElement(document.getElementById('step'));
+    hideElement(document.getElementById('speed'));
+    document.getElementById('state').innerHTML = startState;
+    setStatus("idle");
   }
 
 }
@@ -213,7 +222,7 @@ function spliceString(str, index, count, add) {
 
 function loadFailed(line) {
 
-  window.alert('There is an error in your config at line '+line+'!');
+  displayMessage('There is an error in your config at line '+line+'!');
 
   loadSuccessful = false;
 
@@ -221,16 +230,23 @@ function loadFailed(line) {
 
 async function startMachine() {
 
-  input = document.getElementById('input').value;
-  tapePos = 1;
-  state = startState;
-  failed = false;
-  path = [];
+  if (document.getElementById('input').value != "") {
 
-  document.getElementById('tape').innerHTML = "";
-  tape = spliceString("##",tapePos,-1,input);
+    input = document.getElementById('input').value;
+    tapePos = 1;
+    state = startState;
+    failed = false;
+    path = [];
+    stepcounter = 0;
 
-  process();
+    document.getElementById('tape').innerHTML = "";
+    tape = spliceString("##",tapePos,-1,input);
+
+    process();
+
+  } else {
+    displayMessage("There is no input defined...");
+  }
 
 }
 
@@ -267,6 +283,13 @@ async function process() {
 
     if (!failed) {
       document.getElementById('tape').innerHTML = tape;
+      document.getElementById('state').innerHTML = state;
+      document.getElementById('counter').innerHTML = path.length;
+      showElement(document.getElementById('play'));
+      showElement(document.getElementById('step'));
+      showElement(document.getElementById('speed'));
+      hideElement(document.getElementById('start'));
+      setStatus("finished");
       console.log("Finished!");
       tape = "#"+input+"#";
       tapePos = 1;
@@ -344,19 +367,33 @@ async function computeStep(n, m) {
 
 }
 
-async function replaySolution() {
+async function replay() {
 
-  if (path.length <= 0) {
+  playing ^= true;
 
-    window.alert("The machine has already halted!\nTo replay again, you'll have to run your input once again.");
-
+  if (playing) {
+    document.getElementById('play').innerHTML = "Pause";
+  } else {
+    document.getElementById('play').innerHTML = "Play";
   }
 
-  while (path.length > 0) {
+  while ( (path.length > 0) && playing) {
 
     applyRule(rules[path[0]]);
 
-    await sleep(100);
+    await sleep(speed);
+
+  }
+
+  if (path.length == 0) {
+
+    playing ^= true;
+    setStatus("finished");
+    showElement(document.getElementById('start'));
+    hideElement(document.getElementById('speed'));
+    hideElement(document.getElementById('play'));
+    hideElement(document.getElementById('step'));
+    document.getElementById('play').innerHTML = "Play";
 
   }
 
@@ -369,7 +406,15 @@ function stepper() {
     applyRule(rules[path[0]]);
 
   } else {
-    window.alert("The machine has already halted!");
+    displayMessage("The machine has already halted!");
+  }
+
+  if (path.length == 0) {
+    setStatus("finished");
+    showElement(document.getElementById('start'));
+    hideElement(document.getElementById('speed'));
+    hideElement(document.getElementById('play'));
+    hideElement(document.getElementById('step'));
   }
 
 }
@@ -403,6 +448,10 @@ function applyRule(rule) {
   path.shift();
 
   document.getElementById('tape').innerHTML = spliceString(tape,tapePos,0,"<span id='highlight'>"+tape.charAt(tapePos)+"</span>");
+  document.getElementById('state').innerHTML = state;
+  setStatus("processing");
+  stepcounter++;
+  document.getElementById('counter').innerHTML = stepcounter;
   document.getElementById('tape').scrollLeft = document.getElementById('highlight').offsetLeft;
 
 }
@@ -421,6 +470,9 @@ function loading() {
     for (var i = 0; i < buttons.length; i++) {
       buttons[i].disabled = true;
     }
+
+    document.getElementById('state').innerHTML = "";
+    setStatus("processing");
 
   } else {
 
@@ -446,11 +498,29 @@ function showElement(element) {
   element.style.display = "block";
 }
 
+function setStatus(status) {
+  document.getElementById('state').className = status;
+}
+
+function displayMessage(message) {
+  document.getElementById('tape').innerHTML = message;
+}
+
+function setSpeed() {
+  speed = prompt('Waiting time per step in ms:');console.log(speed);
+}
+
 function fail() {
 
-  window.alert("FAILED!");
-
+  displayMessage("FAILED!");
+  setStatus("failed");
   failed = true;
+  showElement(document.getElementById('play'));
+  showElement(document.getElementById('step'));
+  showElement(document.getElementById('speed'));
+  hideElement(document.getElementById('start'));
+  tape = "#"+input+"#";
+  tapePos = 1;
 
 }
 

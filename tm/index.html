@@ -22,34 +22,66 @@
       <div class='spinner'><div class='blue'></div></div>
     </div>
 
-    <div id='tape'>
+    <div id='automaton'>
+
+      <ul id='definition'></ul>
+
+      <div id='state'></div>
+
+      <div id='tape'></div>
+
+      <div id='stepcounter'>Steps: <span id='counter'></span></div>
 
     </div>
 
     <form id='controls'>
 
-      <textarea id='rules'></textarea>
+      <input id='input' type='text' placeholder='Input' />
 
-      <input id='input' type='text' />
+      <textarea id='rules' placeholder='Rules'></textarea>
 
       <div id='buttons'>
-        <button id='start' type='button' onclick="startMachine();">Starten</button>
-        <button id='load' type='button' onclick="loadRules();">Laden</button>
-        <button id='replay' type='button' onclick="replaySolution();">Animieren</button>
-        <button id='step' type='button' onclick="stepper();">Schritt</button>
+        <button id='start' type='button' onclick="startMachine();">Process</button>
+        <button id='load' type='button' onclick="loadRules();">Load</button>
+        <button id='play' type='button' onclick="replay();">Play</button>
+        <button id='step' type='button' onclick="stepper();">Step</button>
+        <button id='speed' type='button' onclick="setSpeed();">Set Speed</button>
       </div>
 
     </form>
 
     <script>
 
-      document.getElementById('rules').addEventListener("paste", function() {showElement(window.document.getElementById('load'));});
-      document.getElementById('rules').addEventListener("input", function() {showElement(window.document.getElementById('load'));});
-
-      document.getElementById('step').addEventListener("click", function() {
-        var topLeft = document.getElementById('highlight').offsetLeft;
-        document.getElementById('tape').scrollLeft = topLeft;
+      document.getElementById('rules').addEventListener("paste", function() {
+        showElement(window.document.getElementById('load'));
+        hideElement(window.document.getElementById('start'));
+        hideElement(window.document.getElementById('play'));
+        hideElement(window.document.getElementById('step'));
       });
+      document.getElementById('rules').addEventListener("input", function() {
+        showElement(window.document.getElementById('load'));
+        hideElement(window.document.getElementById('start'));
+        hideElement(window.document.getElementById('play'));
+        hideElement(window.document.getElementById('step'));
+      });
+
+      document.getElementById('input').addEventListener("paste", function() {
+        showElement(window.document.getElementById('start'));
+        hideElement(window.document.getElementById('load'));
+        hideElement(window.document.getElementById('play'));
+        hideElement(window.document.getElementById('step'));
+      });
+      document.getElementById('input').addEventListener("input", function() {
+        showElement(window.document.getElementById('start'));
+        hideElement(window.document.getElementById('load'));
+        hideElement(window.document.getElementById('play'));
+        hideElement(window.document.getElementById('step'));
+      });
+
+      hideElement(document.getElementById('start'));
+      hideElement(document.getElementById('play'));
+      hideElement(document.getElementById('step'));
+      hideElement(document.getElementById('speed'));
 
     </script>
 
